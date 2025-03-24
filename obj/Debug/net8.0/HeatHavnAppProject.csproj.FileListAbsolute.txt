@@ -1,0 +1,7 @@
+C:\Users\gubau\HeatHavnAppProject\obj\Debug\net8.0\HeatHavnAppProject.csproj.AssemblyReference.cache
+C:\Users\gubau\HeatHavnAppProject\obj\Debug\net8.0\Avalonia\Resources.Inputs.cache
+C:\Users\gubau\HeatHavnAppProject\obj\Debug\net8.0\Avalonia\resources
+C:\Users\gubau\HeatHavnAppProject\obj\Debug\net8.0\HeatHavnAppProject.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gubau\HeatHavnAppProject\obj\Debug\net8.0\HeatHavnAppProject.AssemblyInfoInputs.cache
+C:\Users\gubau\HeatHavnAppProject\obj\Debug\net8.0\HeatHavnAppProject.AssemblyInfo.cs
+C:\Users\gubau\HeatHavnAppProject\obj\Debug\net8.0\HeatHavnAppProject.csproj.CoreCompileInputs.cache

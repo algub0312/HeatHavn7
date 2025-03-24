@@ -1,0 +1,48 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:HeatHavnAppProject.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="HeatHavnAppProject.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="HeatHavnAppProject"
+        Width="1000" Height="700">
+
+   <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar Menu -->
+        <Border Grid.Column="0" Background="#2C3E50" Padding="10">
+        <StackPanel>
+            <TextBlock Text="🔥 Heat Production Optimization" FontWeight="Bold" Foreground="White" Margin="0,0,0,20"/>
+
+            <Button Content="📁 Asset Manager" Margin="0,5" Background="Transparent" Foreground="White"/>
+            <Button Content="📊 Source Data Manager" Margin="0,5" Background="Transparent" Foreground="White"/>
+            <Button Content="📈 Optimizer" Margin="0,5" Background="Transparent" Foreground="White"/>
+            <Button Content="📦 Result Data Manager" Margin="0,5" Background="Transparent" Foreground="White"/>
+            <Button Content="📉 Data Visualization" Margin="0,5" Background="Transparent" Foreground="White"/>
+
+            <Separator Margin="0,10"/>
+            <Button Content="🧪 Scenario Selection" Margin="0,5" Background="Transparent" Foreground="White"/>
+            <Button Content="📅 Time Period" Margin="0,5" Background="Transparent" Foreground="White"/>
+            <Button Content="⚙️ Settings" Margin="0,5" Background="Transparent" Foreground="White"/>
+            <Button Content="🧰 Advanced Tools" Margin="0,5" Background="Transparent" Foreground="White"/>
+
+            <Separator Margin="0,10"/>
+            <Button Content="🚀 Run Optimization" Margin="0,5" Background="Transparent" Foreground="White"/>
+            <Button Content="📤 Export Results" Margin="0,5" Background="Transparent" Foreground="White"/>
+            <Button Content="❌ Exit" Margin="0,5" Background="Transparent" Foreground="White"/>
+           
+        </StackPanel>
+         </Border>
+
+        <!-- Content Area -->
+       <ContentControl Grid.Column="1" Content="{Binding CurrentView}" />
+        
+    </Grid>
+
+</Window>
