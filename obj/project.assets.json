@@ -2179,11 +2179,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\gubau\\Desktop\\merge\\HeatHavnAppProject.csproj",
+      "projectUniqueName": "C:\\Users\\gubau\\Documents\\GitHub\\HeatHavn7\\HeatHavnAppProject.csproj",
       "projectName": "HeatHavnAppProject",
-      "projectPath": "C:\\Users\\gubau\\Desktop\\merge\\HeatHavnAppProject.csproj",
+      "projectPath": "C:\\Users\\gubau\\Documents\\GitHub\\HeatHavn7\\HeatHavnAppProject.csproj",
       "packagesPath": "C:\\Users\\gubau\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\gubau\\Desktop\\merge\\obj\\",
+      "outputPath": "C:\\Users\\gubau\\Documents\\GitHub\\HeatHavn7\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\gubau\\AppData\\Roaming\\NuGet\\NuGet.Config"
