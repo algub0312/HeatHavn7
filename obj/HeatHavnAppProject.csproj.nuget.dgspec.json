@@ -72,6 +72,10 @@
               "target": "Package",
               "version": "[8.2.1, )"
             },
+            "CsvHelper": {
+              "target": "Package",
+              "version": "[33.0.1, )"
+            },
             "LiveChartsCore.SkiaSharpView.Avalonia": {
               "target": "Package",
               "version": "[2.0.0-rc5.4, )"
@@ -83,6 +87,10 @@
             "ReactiveUI.fody": {
               "target": "Package",
               "version": "[19.5.41, )"
+            },
+            "SkiaSharp": {
+              "target": "Package",
+              "version": "[3.116.1, )"
             },
             "System.Reactive": {
               "target": "Package",

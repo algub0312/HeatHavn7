@@ -1,24 +1,32 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
+using HeatHavnAppProject.ViewModels;
+using ReactiveUI;
 
 namespace HeatHavnAppProject.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    public ObservableCollection<ViewModelBase> Tabs { get; }
-    public string[] TabNames { get; } = {
-        "📁 Asset Manager", "📊 Source Data Manager", "📈 Optimizer",
-        "📦 Result Data Manager", "📉 Data Visualization",
-        "🧪 Scenario Selection", "📅 Time Period", "⚙️ Settings", "🧰 Advanced Tools"
+    public ObservableCollection<ViewModelBase> Tabs { get; } = new()
+    {
+        new AssetManagerViewModel(),
+        new SourceDataManagerViewModel(),
+        new ViewModelBase(),
+        new ViewModelBase(),
+        new ViewModelBase(),
+
     };
+
+    private ViewModelBase _currentView;
+    public ViewModelBase CurrentView
+    {
+        get => _currentView;
+        set => this.RaiseAndSetIfChanged(ref _currentView, value);
+    }
+
 
     public MainWindowViewModel()
     {
-        Tabs = new ObservableCollection<ViewModelBase>
-        {
-            new AssetManagerViewModel(), // Only this one is real for now
-            new ViewModelBase(), new ViewModelBase(), new ViewModelBase(),
-            new ViewModelBase(), new ViewModelBase(), new ViewModelBase(),
-            new ViewModelBase(), new ViewModelBase()
-        };
+        CurrentView = Tabs.First(); // default selected tab
     }
 }

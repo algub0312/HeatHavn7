@@ -15,9 +15,11 @@
           "Avalonia.ReactiveUI": "11.2.5",
           "Avalonia.Themes.Fluent": "11.2.1",
           "CommunityToolkit.Mvvm": "8.2.1",
+          "CsvHelper": "33.0.1",
           "LiveChartsCore.SkiaSharpView.Avalonia": "2.0.0-rc5.4",
           "ReactiveUI": "20.2.45",
           "ReactiveUI.Fody": "19.5.41",
+          "SkiaSharp": "3.116.1",
           "System.Reactive": "6.0.1"
         },
         "runtime": {
@@ -218,7 +220,7 @@
           "HarfBuzzSharp": "7.3.0.3",
           "HarfBuzzSharp.NativeAssets.Linux": "7.3.0.2",
           "HarfBuzzSharp.NativeAssets.WebAssembly": "7.3.0.3-preview.2.2",
-          "SkiaSharp": "2.88.9",
+          "SkiaSharp": "3.116.1",
           "SkiaSharp.NativeAssets.Linux": "2.88.8",
           "SkiaSharp.NativeAssets.WebAssembly": "2.88.8"
         },
@@ -281,6 +283,14 @@
           "lib/net6.0/CommunityToolkit.Mvvm.dll": {
             "assemblyVersion": "8.2.0.0",
             "fileVersion": "8.2.1.1"
+          }
+        }
+      },
+      "CsvHelper/33.0.1": {
+        "runtime": {
+          "lib/net8.0/CsvHelper.dll": {
+            "assemblyVersion": "33.0.0.0",
+            "fileVersion": "33.0.1.24"
           }
         }
       },
@@ -375,7 +385,7 @@
       "LiveChartsCore.SkiaSharpView/2.0.0-rc5.4": {
         "dependencies": {
           "LiveChartsCore": "2.0.0-rc5.4",
-          "SkiaSharp": "2.88.9",
+          "SkiaSharp": "3.116.1",
           "SkiaSharp.HarfBuzz": "2.88.9"
         },
         "runtime": {
@@ -432,22 +442,22 @@
           }
         }
       },
-      "SkiaSharp/2.88.9": {
+      "SkiaSharp/3.116.1": {
         "dependencies": {
-          "SkiaSharp.NativeAssets.Win32": "2.88.9",
-          "SkiaSharp.NativeAssets.macOS": "2.88.9"
+          "SkiaSharp.NativeAssets.Win32": "3.116.1",
+          "SkiaSharp.NativeAssets.macOS": "3.116.1"
         },
         "runtime": {
-          "lib/net6.0/SkiaSharp.dll": {
-            "assemblyVersion": "2.88.0.0",
-            "fileVersion": "2.88.9.0"
+          "lib/net8.0/SkiaSharp.dll": {
+            "assemblyVersion": "3.116.0.0",
+            "fileVersion": "3.116.1.0"
           }
         }
       },
       "SkiaSharp.HarfBuzz/2.88.9": {
         "dependencies": {
           "HarfBuzzSharp": "7.3.0.3",
-          "SkiaSharp": "2.88.9"
+          "SkiaSharp": "3.116.1"
         },
         "runtime": {
           "lib/net6.0/SkiaSharp.HarfBuzz.dll": {
@@ -458,7 +468,7 @@
       },
       "SkiaSharp.NativeAssets.Linux/2.88.8": {
         "dependencies": {
-          "SkiaSharp": "2.88.9"
+          "SkiaSharp": "3.116.1"
         },
         "runtimeTargets": {
           "runtimes/linux-arm/native/libSkiaSharp.so": {
@@ -483,7 +493,7 @@
           }
         }
       },
-      "SkiaSharp.NativeAssets.macOS/2.88.9": {
+      "SkiaSharp.NativeAssets.macOS/3.116.1": {
         "runtimeTargets": {
           "runtimes/osx/native/libSkiaSharp.dylib": {
             "rid": "osx",
@@ -493,7 +503,7 @@
         }
       },
       "SkiaSharp.NativeAssets.WebAssembly/2.88.8": {},
-      "SkiaSharp.NativeAssets.Win32/2.88.9": {
+      "SkiaSharp.NativeAssets.Win32/3.116.1": {
         "runtimeTargets": {
           "runtimes/win-arm64/native/libSkiaSharp.dll": {
             "rid": "win-arm64",
@@ -683,6 +693,13 @@
       "path": "communitytoolkit.mvvm/8.2.1",
       "hashPath": "communitytoolkit.mvvm.8.2.1.nupkg.sha512"
     },
+    "CsvHelper/33.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fev4lynklAU2A9GVMLtwarkwaanjSYB4wUqO2nOJX5hnzObORzUqVLe+bDYCUyIIRQM4o5Bsq3CcyJR89iMmEQ==",
+      "path": "csvhelper/33.0.1",
+      "hashPath": "csvhelper.33.0.1.nupkg.sha512"
+    },
     "DynamicData/9.1.2": {
       "type": "package",
       "serviceable": true,
@@ -774,12 +791,12 @@
       "path": "reactiveui.fody/19.5.41",
       "hashPath": "reactiveui.fody.19.5.41.nupkg.sha512"
     },
-    "SkiaSharp/2.88.9": {
+    "SkiaSharp/3.116.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-3MD5VHjXXieSHCleRLuaTXmL2pD0mB7CcOB1x2kA1I4bhptf4e3R27iM93264ZYuAq6mkUyX5XbcxnZvMJYc1Q==",
-      "path": "skiasharp/2.88.9",
-      "hashPath": "skiasharp.2.88.9.nupkg.sha512"
+      "sha512": "sha512-DNDwbRjP+aMo27dV2h/uHCVTcWubWWxHnPLiePNyl24f4Pv43mQ8AQQeseOrKR+J3AOCEs6t0sUjo0aa3j3RWQ==",
+      "path": "skiasharp/3.116.1",
+      "hashPath": "skiasharp.3.116.1.nupkg.sha512"
     },
     "SkiaSharp.HarfBuzz/2.88.9": {
       "type": "package",
@@ -795,12 +812,12 @@
       "path": "skiasharp.nativeassets.linux/2.88.8",
       "hashPath": "skiasharp.nativeassets.linux.2.88.8.nupkg.sha512"
     },
-    "SkiaSharp.NativeAssets.macOS/2.88.9": {
+    "SkiaSharp.NativeAssets.macOS/3.116.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Nv5spmKc4505Ep7oUoJ5vp3KweFpeNqxpyGDWyeEPTX2uR6S6syXIm3gj75dM0YJz7NPvcix48mR5laqs8dPuA==",
-      "path": "skiasharp.nativeassets.macos/2.88.9",
-      "hashPath": "skiasharp.nativeassets.macos.2.88.9.nupkg.sha512"
+      "sha512": "sha512-3KPvpKysDmEMt0NnAZPX5U6KFk0LmG/72/IjAIJemIksIZ0Tjs9pGpr3L+zboVCv1MLVoJLKl3nJDXUG6Jda6A==",
+      "path": "skiasharp.nativeassets.macos/3.116.1",
+      "hashPath": "skiasharp.nativeassets.macos.3.116.1.nupkg.sha512"
     },
     "SkiaSharp.NativeAssets.WebAssembly/2.88.8": {
       "type": "package",
@@ -809,12 +826,12 @@
       "path": "skiasharp.nativeassets.webassembly/2.88.8",
       "hashPath": "skiasharp.nativeassets.webassembly.2.88.8.nupkg.sha512"
     },
-    "SkiaSharp.NativeAssets.Win32/2.88.9": {
+    "SkiaSharp.NativeAssets.Win32/3.116.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-wb2kYgU7iy84nQLYZwMeJXixvK++GoIuECjU4ECaUKNuflyRlJKyiRhN1MAHswvlvzuvkrjRWlK0Za6+kYQK7w==",
-      "path": "skiasharp.nativeassets.win32/2.88.9",
-      "hashPath": "skiasharp.nativeassets.win32.2.88.9.nupkg.sha512"
+      "sha512": "sha512-dRQ75MCI8oz6zAs2Y1w6pq6ARs4MhdNG+gf3doOxOxdnueDXffQLGQIxON54GDoxc0WjKOoHMKBR4DhaduwwQw==",
+      "path": "skiasharp.nativeassets.win32/3.116.1",
+      "hashPath": "skiasharp.nativeassets.win32.3.116.1.nupkg.sha512"
     },
     "Splat/15.3.1": {
       "type": "package",

@@ -29,3 +29,6 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [C:/Users/gubau/Documents/GitHub/HeatHavn7/Views/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/gubau/Documents/GitHub/HeatHavn7/Views/SourceDataManagerView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
