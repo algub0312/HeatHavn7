@@ -1,55 +1,24 @@
-<UserControl
-    x:Class="HeatHavnAppProject.Views.AssetManagerView"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:models="clr-namespace:HeatHavnAppProject.Models"
-    xmlns:vm="clr-namespace:HeatHavnAppProject.ViewModels"
-    x:DataType="vm:AssetManagerViewModel">
-
-
-
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:HeatHavnAppProject.ViewModels"
+             xmlns:models="clr-namespace:HeatHavnAppProject.Models"
+             x:Class="HeatHavnAppProject.Views.AssetManagerView"
+             x:DataType="vm:AssetManagerViewModel">
+    
     <ScrollViewer>
         <StackPanel Margin="20">
-            <TextBlock Text="🏙️ Heating Grid: Heatington" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
-            <TextBlock Text="1600 buildings - Single district heating network" FontStyle="Italic" Margin="0,0,0,20"/>
-
-            <TextBlock Text="🔥 Production Units" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
-
+            <TextBlock Text="📁 Asset Manager" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
             <ItemsControl ItemsSource="{Binding ProductionUnits}">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="models:ProductionUnit">
                         <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="8" Padding="10" Margin="0,0,0,10">
                             <StackPanel>
                                 <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
-                                
-                                <TextBlock>
-                                    <Run Text="Max Heat: "/>
-                                    <Run Text="{Binding MaxHeat}"/>
-                                    <Run Text=" MW"/>
-                                </TextBlock>
-
-                                <TextBlock>
-                                    <Run Text="Max Electricity: "/>
-                                    <Run Text="{Binding MaxElectricity}"/>
-                                    <Run Text=" MW"/>
-                                </TextBlock>
-
-                                <TextBlock>
-                                    <Run Text="Cost: "/>
-                                    <Run Text="{Binding ProductionCosts}"/>
-                                    <Run Text=" DKK/MWh(th)"/>
-                                </TextBlock>
-
-                                <TextBlock>
-                                    <Run Text="CO₂: "/>
-                                    <Run Text="{Binding CO2Emissions}"/>
-                                    <Run Text=" kg/MWh(th)"/>
-                                </TextBlock>
-
-                                <TextBlock>
-                                    <Run Text="Energy Type: "/>
-                                    <Run Text="{Binding EnergyType}"/>
-                                </TextBlock>
+                                <TextBlock><Run Text="Max Heat: "/><Run Text="{Binding MaxHeat}"/><Run Text=" MW"/></TextBlock>
+                                <TextBlock><Run Text="Max Electricity: "/><Run Text="{Binding MaxElectricity}"/><Run Text=" MW"/></TextBlock>
+                                <TextBlock><Run Text="Cost: "/><Run Text="{Binding ProductionCosts}"/><Run Text=" DKK/MWh(th)"/></TextBlock>
+                                <TextBlock><Run Text="CO₂: "/><Run Text="{Binding CO2Emissions}"/><Run Text=" kg/MWh(th)"/></TextBlock>
+                                <TextBlock><Run Text="Energy Type: "/><Run Text="{Binding EnergyType}"/></TextBlock>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

@@ -1,31 +1,38 @@
-using System;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using HeatHavnAppProject.Models;
-using HeatHavnAppProject.ViewModels;
 
-public class SourceDataManagerViewModel : ViewModelBase
+namespace HeatHavnAppProject.ViewModels
 {
-    public ObservableCollection<TimeSeriesEntry> HeatDemandSeries { get; } = new();
-    public ObservableCollection<TimeSeriesEntry> ElectricityPriceSeries { get; } = new();
-
-    public async Task LoadHeatDemandAsync(string filePath)
+    public class SourceDataManagerViewModel : ViewModelBase
     {
-        var lines = await File.ReadAllLinesAsync(filePath);
-        HeatDemandSeries.Clear();
-        foreach (var line in lines.Skip(1)) // assuming header
+        public override string Title => "📊 Source Data Manager";
+        public ObservableCollection<SourceData> SourceDataList { get; }
+
+        public SourceDataManagerViewModel()
         {
-            var parts = line.Split(',');
-            HeatDemandSeries.Add(new TimeSeriesEntry
+            SourceDataList = new ObservableCollection<SourceData>();
+
+            // Citește fișierul CSV
+            var lines = File.ReadAllLines("sourcedata.csv").Skip(1); // presupunem că prima linie e header
+
+            foreach (var line in lines)
             {
-                Time = DateTime.Parse(parts[0]),
-                Value = double.Parse(parts[1], CultureInfo.InvariantCulture)
-            });
+                var parts = line.Split(',');
+
+                if (parts.Length >= 5)
+                {
+                    SourceDataList.Add(new SourceData
+                    {
+                        Season = parts[0],
+                        TimeFrom = parts[1],
+                        TimeTo = parts[2],
+                        HeatDemand = double.TryParse(parts[3], out var h) ? h : 0,
+                        ElectricityPrice = double.TryParse(parts[4], out var e) ? e : 0
+                    });
+                }
+            }
         }
     }
-
-    // Same for electricity prices...
 }

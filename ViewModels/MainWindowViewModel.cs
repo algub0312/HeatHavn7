@@ -1,28 +1,32 @@
-﻿using ReactiveUI;
-using System.Reactive;
-using HeatHavnAppProject.Views;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+using HeatHavnAppProject.ViewModels;
+using ReactiveUI;
 
-namespace HeatHavnAppProject.ViewModels
+namespace HeatHavnAppProject.ViewModels;
+
+public class MainWindowViewModel : ViewModelBase
 {
-    public class MainWindowViewModel : ViewModelBase
+    public ObservableCollection<ViewModelBase> Tabs { get; } = new()
     {
-        private ViewModelBase? _currentView;
-        public ViewModelBase? CurrentView
-        {
-            get => _currentView;
-            set => this.RaiseAndSetIfChanged(ref _currentView, value);
-        }
+        new AssetManagerViewModel(),
+        new SourceDataManagerViewModel(),
+        new ViewModelBase(),
+        new ViewModelBase(),
+        new ViewModelBase(),
 
-        public ReactiveCommand<Unit, Unit> ShowAssetManagerCommand { get; }
+    };
 
-        public MainWindowViewModel()
-        {
-            ShowAssetManagerCommand = ReactiveCommand.Create(() =>
-            {
-                CurrentView = new AssetManagerViewModel();
-            });
+    private ViewModelBase _currentView;
+    public ViewModelBase CurrentView
+    {
+        get => _currentView;
+        set => this.RaiseAndSetIfChanged(ref _currentView, value);
+    }
 
-            CurrentView = new AssetManagerViewModel();
-        }
+
+    public MainWindowViewModel()
+    {
+        CurrentView = Tabs.First(); // default selected tab
     }
 }
