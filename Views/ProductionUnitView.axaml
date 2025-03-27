@@ -2,13 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:HeatHavnAppProject.ViewModels"
              xmlns:models="clr-namespace:HeatHavnAppProject.Models"
-             x:Class="HeatHavnAppProject.Views.AssetManagerView"
-             x:DataType="vm:AssetManagerViewModel">
+             x:Class="HeatHavnAppProject.Views.ProductionUnitView"
+             x:DataType="vm:ProductionUnitsViewModel">
+
+             
     
     <ScrollViewer>
         <StackPanel Margin="20">
-            <TextBlock Text="📁 Asset Manager" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
-            <ItemsControl ItemsSource="{Binding ProductionUnits}">
+            <TextBlock Text="📁 Production Units" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+            <ItemsControl ItemsSource="{Binding Units}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="models:ProductionUnit">
                         <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="8" Padding="10" Margin="0,0,0,10">

@@ -33,12 +33,10 @@
     <ContentControl Grid.Column="1"
                     Content="{Binding CurrentView}">
         <ContentControl.DataTemplates>
-            <DataTemplate x:DataType="vm:AssetManagerViewModel">
-                <views:AssetManagerView />
+            <DataTemplate x:DataType="vm:ProductionUnitsViewModel">
+                <views:ProductionUnitView />
             </DataTemplate>
-            <DataTemplate x:DataType="vm:SourceDataManagerViewModel">
-              <views:SourceDataManagerView />
-            </DataTemplate>
+            
             <DataTemplate x:DataType="vm:ViewModelBase">
                 <TextBlock Text="🚧 Not implemented yet"
                            VerticalAlignment="Center"

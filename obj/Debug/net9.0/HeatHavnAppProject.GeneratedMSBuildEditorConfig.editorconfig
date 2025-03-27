@@ -24,11 +24,8 @@ build_property.EnableCodeStyleSeverity =
 [C:/Users/gubau/Documents/GitHub/HeatHavn7/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/gubau/Documents/GitHub/HeatHavn7/Views/AssetManagerView.axaml]
-build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
-
 [C:/Users/gubau/Documents/GitHub/HeatHavn7/Views/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/gubau/Documents/GitHub/HeatHavn7/Views/SourceDataManagerView.axaml]
+[C:/Users/gubau/Documents/GitHub/HeatHavn7/Views/ProductionUnitView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

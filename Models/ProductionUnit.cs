@@ -10,4 +10,5 @@ public class ProductionUnit
     public string EnergyType { get; set; } = string.Empty;
     public double EnergyConsumption { get; set; }
     public double OilConsumption { get; set; }
+    public double GasConsumption { get; set; }
 }
