@@ -3,9 +3,9 @@ using Avalonia.Markup.Xaml;
 
 namespace HeatHavnAppProject.Views
 {
-    public partial class AssetManagerView : UserControl
+    public partial class ProductionUnitView : UserControl
     {
-        public AssetManagerView()
+        public ProductionUnitView()
         {
             InitializeComponent();
         }

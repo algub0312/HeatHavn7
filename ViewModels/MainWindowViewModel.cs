@@ -2,23 +2,13 @@
 using System.Linq;
 using HeatHavnAppProject.ViewModels;
 using ReactiveUI;
-
 namespace HeatHavnAppProject.ViewModels;
-
 public class MainWindowViewModel : ViewModelBase
 {
-    public ObservableCollection<ViewModelBase> Tabs { get; } = new()
-    {
-        new AssetManagerViewModel(),
-        new SourceDataManagerViewModel(),
-        new ViewModelBase(),
-        new ViewModelBase(),
-        new ViewModelBase(),
+    public ObservableCollection<object> Tabs { get; }
 
-    };
-
-    private ViewModelBase _currentView;
-    public ViewModelBase CurrentView
+    private object _currentView;
+    public object CurrentView
     {
         get => _currentView;
         set => this.RaiseAndSetIfChanged(ref _currentView, value);
@@ -27,6 +17,15 @@ public class MainWindowViewModel : ViewModelBase
 
     public MainWindowViewModel()
     {
-        CurrentView = Tabs.First(); // default selected tab
+        var assetManagerVM = new AssetManagerViewModel();
+        Tabs = new ObservableCollection<object>
+        {
+            new ProductionUnitsViewModel(assetManagerVM),
+            new ViewModelBase(),
+            new ViewModelBase(),
+            new ViewModelBase(),
+        };
+
+        CurrentView = Tabs.First();
     }
 }
