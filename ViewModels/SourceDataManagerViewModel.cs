@@ -48,8 +48,8 @@ public class SourceDataManagerViewModel : ViewModelBase
     foreach (var row in raw)
         SummerDataEl.Add(new TimeSeriesEntry
         {
-            Timestampp = row.TimeFrom,
-            Valuee = row.ElectricityPrice
+            Timestamp= row.TimeFrom,
+            Value = row.ElectricityPrice
         });
 }
     public void LoadWinterDataEl(string filePath)
@@ -59,8 +59,8 @@ public class SourceDataManagerViewModel : ViewModelBase
         foreach (var row in raw)
             WinterDataEl.Add(new TimeSeriesEntry
             {
-                Timestampp = row.TimeFrom,
-                Valuee = row.ElectricityPrice
+                Timestamp = row.TimeFrom,
+                Value = row.ElectricityPrice
             });
            
     }
