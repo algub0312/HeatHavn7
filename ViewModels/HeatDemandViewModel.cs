@@ -7,25 +7,9 @@ using System.Diagnostics;
 using LiveChartsCore;
 using ReactiveUI;
 
-public class HeatDemandViewModel : ViewModelBase
+public class HeatDemandViewModel : SeasonalViewModelBase
 {
-    public override string Title => "Heat Demand";
-
-    public ObservableCollection<string> AvailableSeasons { get; } = new() { "Summer", "Winter" };
-
-    private string _selectedSeason = "Summer";
-    public string SelectedSeason
-    {
-        get => _selectedSeason;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _selectedSeason, value);
-            UpdateFilteredHeatDemand(); // actualizează lista
-        }
-    }
-
-    public ObservableCollection<string> Seasons { get; } = new() { "Summer", "Winter" };
-
+    public override string Title => "🔥Heat Demand";
 
     public ObservableCollection<TimeSeriesEntry> FilteredHeatDemand { get; } = new();
 
@@ -36,21 +20,22 @@ public class HeatDemandViewModel : ViewModelBase
         _source = sourceData;
 
         Debug.WriteLine("🔥 HeatDemandViewModel constructor started!");
-        Debug.WriteLine("Summer data count: " + _source.SummerData.Count);
-        Debug.WriteLine("Winter data count: " + _source.WinterData.Count);
+        Debug.WriteLine("Summer data count: " + _source.SummerDataHeat.Count);
+        Debug.WriteLine("Winter data count: " + _source.WinterDataHeat.Count);
 
-        SelectedSeason = "Summer";
+        
+        UpdateFilteredHeatDemand();
+    }
+    protected override void OnSeasonChanged()
+    {
         UpdateFilteredHeatDemand();
     }
 
+
     private void UpdateFilteredHeatDemand()
     {
-        FilteredHeatDemand.Clear();
-
-        var data = SelectedSeason == "Summer"
-            ? _source.SummerData
-            : _source.WinterData;
-
+         FilteredHeatDemand.Clear();
+        var data = SelectedSeason == "Summer" ? _source.SummerDataHeat : _source.WinterDataHeat;
         foreach (var entry in data)
             FilteredHeatDemand.Add(entry);
 

@@ -24,6 +24,9 @@ build_property.EnableCodeStyleSeverity =
 [C:/Users/Mihai/Documents/GitHub/HeatHavn7/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[C:/Users/Mihai/Documents/GitHub/HeatHavn7/Views/ElectricityPricesView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [C:/Users/Mihai/Documents/GitHub/HeatHavn7/Views/HeatDemandView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
