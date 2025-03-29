@@ -2195,19 +2195,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\gubau\\.nuget\\packages\\": {}
+    "C:\\Users\\Mihai\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\gubau\\Documents\\GitHub\\HeatHavn7\\HeatHavnAppProject.csproj",
+      "projectUniqueName": "C:\\Users\\Mihai\\Documents\\GitHub\\HeatHavn7\\HeatHavnAppProject.csproj",
       "projectName": "HeatHavnAppProject",
-      "projectPath": "C:\\Users\\gubau\\Documents\\GitHub\\HeatHavn7\\HeatHavnAppProject.csproj",
-      "packagesPath": "C:\\Users\\gubau\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\gubau\\Documents\\GitHub\\HeatHavn7\\obj\\",
+      "projectPath": "C:\\Users\\Mihai\\Documents\\GitHub\\HeatHavn7\\HeatHavnAppProject.csproj",
+      "packagesPath": "C:\\Users\\Mihai\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Mihai\\Documents\\GitHub\\HeatHavn7\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\gubau\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Mihai\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
