@@ -2,7 +2,11 @@ using System;
 using System.Collections.ObjectModel;
 using HeatHavnAppProject.ViewModels;
 namespace HeatHavnAppProject.ViewModels;
+
+using System.Diagnostics;
 using LiveChartsCore;
+using ReactiveUI;
+
 public class HeatDemandViewModel : ViewModelBase
 {
     public override string Title => "Heat Demand";
@@ -16,14 +20,12 @@ public class HeatDemandViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref _selectedSeason, value);
-            UpdateFilteredHeatDemand();
+            UpdateFilteredHeatDemand(); // actualizează lista
         }
     }
 
-    private void RaiseAndSetIfChanged(ref string selectedSeason, string value)
-    {
-        throw new NotImplementedException();
-    }
+    public ObservableCollection<string> Seasons { get; } = new() { "Summer", "Winter" };
+
 
     public ObservableCollection<TimeSeriesEntry> FilteredHeatDemand { get; } = new();
 
@@ -32,18 +34,28 @@ public class HeatDemandViewModel : ViewModelBase
     public HeatDemandViewModel(SourceDataManagerViewModel sourceData)
     {
         _source = sourceData;
-        UpdateFilteredHeatDemand(); // load initial data
+
+        Debug.WriteLine("🔥 HeatDemandViewModel constructor started!");
+        Debug.WriteLine("Summer data count: " + _source.SummerData.Count);
+        Debug.WriteLine("Winter data count: " + _source.WinterData.Count);
+
+        SelectedSeason = "Summer";
+        UpdateFilteredHeatDemand();
     }
 
     private void UpdateFilteredHeatDemand()
     {
         FilteredHeatDemand.Clear();
 
-        var source = SelectedSeason == "Summer"
+        var data = SelectedSeason == "Summer"
             ? _source.SummerData
             : _source.WinterData;
 
-        foreach (var item in source)
-            FilteredHeatDemand.Add(item);
+        foreach (var entry in data)
+            FilteredHeatDemand.Add(entry);
+
+        Debug.WriteLine($"🟢 Updated FilteredHeatDemand with {FilteredHeatDemand.Count} entries for {SelectedSeason}");
     }
+
+
 }

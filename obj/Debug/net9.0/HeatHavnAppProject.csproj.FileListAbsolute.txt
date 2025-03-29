@@ -238,8 +238,6 @@ C:\Users\gubau\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavn.A278E633.Up2
 C:\Users\gubau\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.genruntimeconfig.cache
 C:\Users\gubau\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\ref\HeatHavnAppProject.dll
 C:\Users\gubau\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\CsvHelper.dll
-C:\Users\gubau\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.CopyLocal.cache
-C:\Users\gubau\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.RuntimeCopyLocal.cache
 C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\HeatHavnAppProject.exe
 C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\HeatHavnAppProject.deps.json
 C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\HeatHavnAppProject.runtimeconfig.json
@@ -324,3 +322,7 @@ C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\summerperiod.csv
 C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\winterperiod.csv
 C:\Users\Mihai\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.CopyLocal.cache
 C:\Users\Mihai\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.RuntimeCopyLocal.cache
+C:\Users\gubau\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\summerperiod.csv
+C:\Users\gubau\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\winterperiod.csv
+C:\Users\gubau\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.CopyLocal.cache
+C:\Users\gubau\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.RuntimeCopyLocal.cache
