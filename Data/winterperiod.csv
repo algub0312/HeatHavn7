@@ -1,6 +1,5 @@
-﻿Winter period,,,,,,,,
-Time from,Time to,Heat Demand,  ,,,,,
-DKK local time,DKK local time,MWh,DKK / Mwh(el),,,,,
+﻿
+Time from,Time to,Heat Demand,Electricity Price
 01/03/2024 00:00,01/03/2024 01:00,6.62,1190.94,,,,,
 01/03/2024 01:00,01/03/2024 02:00,6.85,1154.55,,,,,
 01/03/2024 02:00,01/03/2024 03:00,6.98,1116.22,,,,,

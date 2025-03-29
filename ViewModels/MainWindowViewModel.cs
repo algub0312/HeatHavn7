@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using HeatHavnAppProject.ViewModels;
 using ReactiveUI;
@@ -15,17 +17,30 @@ public class MainWindowViewModel : ViewModelBase
     }
 
 
-    public MainWindowViewModel()
+     public MainWindowViewModel()
+{
+    try
     {
+        var sourceManager = new SourceDataManagerViewModel();
+        sourceManager.LoadSummerData("Data/summerperiod.csv");
+        sourceManager.LoadWinterData("Data/winterperiod.csv");
+
         var assetManagerVM = new AssetManagerViewModel();
+
         Tabs = new ObservableCollection<object>
         {
             new ProductionUnitsViewModel(assetManagerVM),
-            new ViewModelBase(),
-            new ViewModelBase(),
-            new ViewModelBase(),
+            new HeatDemandViewModel(sourceManager),
+            new ViewModelBase()
         };
 
         CurrentView = Tabs.First();
     }
+    catch (Exception ex)
+    {
+        Debug.WriteLine("💥 EROARE: " + ex.Message);
+    }
+}
+
+
 }
