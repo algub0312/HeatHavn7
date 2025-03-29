@@ -17,8 +17,8 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="0,5">
-                        <TextBlock Text="{Binding Timestampp}" Width="200"/>
-                        <TextBlock Text="{Binding Valuee}" Width="100"/>
+                        <TextBlock Text="{Binding Timestamp}" Width="200"/>
+                        <TextBlock Text="{Binding Value}" Width="100"/>
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
