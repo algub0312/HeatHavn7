@@ -44,7 +44,12 @@
              <DataTemplate x:DataType="vm:ElectricityPricesViewModel">
         <views:ElectricityPricesView />
     </DataTemplate>
-            
+    
+                 <DataTemplate x:DataType="vm:Optimizer">
+                <views:OptimizerView />
+            </DataTemplate>
+
+
             <DataTemplate x:DataType="vm:ViewModelBase">
                 <TextBlock Text="🚧 Not implemented yet"
                            VerticalAlignment="Center"
