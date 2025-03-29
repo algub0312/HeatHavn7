@@ -13,32 +13,58 @@ using System;
 
 public class SourceDataManagerViewModel : ViewModelBase
 {
-    public ObservableCollection<TimeSeriesEntry> SummerData { get; } = new();
-    public ObservableCollection<TimeSeriesEntry> WinterData { get; } = new();
-
-    public void LoadSummerData(string filePath)
+    public ObservableCollection<TimeSeriesEntry> SummerDataHeat { get; } = new();
+    public ObservableCollection<TimeSeriesEntry> WinterDataHeat { get; } = new();
+      public ObservableCollection<TimeSeriesEntry> SummerDataEl { get; } = new();
+    public ObservableCollection<TimeSeriesEntry> WinterDataEl { get; } = new();
+    public void LoadSummerDataHeat(string filePath)
 {
     var raw = LoadCsvRaw(filePath);
-    SummerData.Clear();
+    SummerDataHeat.Clear();
     foreach (var row in raw)
-        SummerData.Add(new TimeSeriesEntry
+        SummerDataHeat.Add(new TimeSeriesEntry
         {
             Timestamp = row.TimeFrom,
             Value = row.HeatDemand
         });
 }
-    public void LoadWinterData(string filePath)
+    public void LoadWinterDataHeat(string filePath)
     {
         var raw = LoadCsvRaw(filePath);
-        WinterData.Clear();
+        WinterDataHeat.Clear();
         foreach (var row in raw)
-            WinterData.Add(new TimeSeriesEntry
+            WinterDataHeat.Add(new TimeSeriesEntry
             {
                 Timestamp = row.TimeFrom,
                 Value = row.HeatDemand
             });
            
     }
+
+ public void LoadSummerDataEl(string filePath)
+{
+    var raw = LoadCsvRaw(filePath);
+    SummerDataEl.Clear();
+    foreach (var row in raw)
+        SummerDataEl.Add(new TimeSeriesEntry
+        {
+            Timestampp = row.TimeFrom,
+            Valuee = row.ElectricityPrice
+        });
+}
+    public void LoadWinterDataEl(string filePath)
+    {
+        var raw = LoadCsvRaw(filePath);
+        WinterDataEl.Clear();
+        foreach (var row in raw)
+            WinterDataEl.Add(new TimeSeriesEntry
+            {
+                Timestampp = row.TimeFrom,
+                Valuee = row.ElectricityPrice
+            });
+           
+    }
+
 
    private List<RawSourceDataEntry> LoadCsvRaw(string path)
 {

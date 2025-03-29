@@ -40,6 +40,10 @@
             <DataTemplate x:DataType="vm:HeatDemandViewModel">
                 <views:HeatDemandView />
             </DataTemplate>
+
+             <DataTemplate x:DataType="vm:ElectricityPricesViewModel">
+        <views:ElectricityPricesView />
+    </DataTemplate>
             
             <DataTemplate x:DataType="vm:ViewModelBase">
                 <TextBlock Text="🚧 Not implemented yet"

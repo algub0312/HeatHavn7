@@ -22,8 +22,11 @@ public class MainWindowViewModel : ViewModelBase
     try
     {
         var sourceManager = new SourceDataManagerViewModel();
-        sourceManager.LoadSummerData("Data/summerperiod.csv");
-        sourceManager.LoadWinterData("Data/winterperiod.csv");
+        sourceManager.LoadSummerDataHeat("Data/summerperiod.csv");
+        sourceManager.LoadWinterDataHeat("Data/winterperiod.csv");
+
+        sourceManager.LoadSummerDataEl("Data/summerperiod.csv");
+        sourceManager.LoadWinterDataEl("Data/winterperiod.csv");
 
         var assetManagerVM = new AssetManagerViewModel();
 
@@ -31,6 +34,7 @@ public class MainWindowViewModel : ViewModelBase
         {
             new ProductionUnitsViewModel(assetManagerVM),
             new HeatDemandViewModel(sourceManager),
+            new ElectricityPricesViewModel(sourceManager),
             new ViewModelBase()
         };
 
