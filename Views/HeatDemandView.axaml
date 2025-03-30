@@ -9,7 +9,7 @@
                 x:DataType="vm:HeatDemandViewModel"
                 mc:Ignorable="d">
                 
-<ScrollViewer>
+
   <StackPanel Margin="20">
 
   <TextBlock Text="🔥 Heat Demand" FontSize="24" FontWeight="Bold" Margin="0,0,0,10"/>
@@ -23,8 +23,9 @@
     ItemsSource="{Binding Seasons}"
     SelectedItem="{Binding SelectedSeason}"
     Width="120"
-    Margin="0,0,0,10" />
-
+    Margin="0,0,0,10" 
+    HorizontalAlignment="Center"/>
+<ScrollViewer MaxHeight="400" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Center">
   <ItemsControl ItemsSource="{Binding FilteredHeatDemand}">
     <ItemsControl.ItemTemplate>
       <DataTemplate>
@@ -35,8 +36,9 @@
       </DataTemplate>
     </ItemsControl.ItemTemplate>
   </ItemsControl>
+  </ScrollViewer>
 
 </StackPanel>
-</ScrollViewer>
+
 
 </UserControl>

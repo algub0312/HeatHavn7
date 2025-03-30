@@ -9,7 +9,7 @@
              x:DataType="vm:ElectricityPricesViewModel"
             mc:Ignorable="d">
 
-<ScrollViewer>
+
     <StackPanel Margin="20">
         <TextBlock Text="⚡ Electricity Prices" FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
 <lvc:CartesianChart 
@@ -18,18 +18,21 @@
     YAxes="{Binding YAxes}"
     Height="200"
     Margin="0,0,0,20"/>
-        <ComboBox ItemsSource="{Binding Seasons}" SelectedItem="{Binding SelectedSeason}" Width="120" Margin="0,0,0,10"/>
-
+        <ComboBox ItemsSource="{Binding Seasons}" SelectedItem="{Binding SelectedSeason}" Width="120" Margin="0,0,0,10" HorizontalAlignment="Center"/>
+<ScrollViewer MaxHeight="400" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Center">
         <ItemsControl ItemsSource="{Binding FilteredElectricityPrices}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
+                   
                     <StackPanel Orientation="Horizontal" Margin="0,5">
                         <TextBlock Text="{Binding Timestamp}" Width="200"/>
                         <TextBlock Text="{Binding Value}" Width="100"/>
                     </StackPanel>
+                    
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+        </ScrollViewer>
     </StackPanel>
-</ScrollViewer>
+
 </UserControl>
