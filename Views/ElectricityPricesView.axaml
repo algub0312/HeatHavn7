@@ -2,6 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
+              xmlns:livecharts="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
              xmlns:vm="clr-namespace:HeatHavnAppProject.ViewModels"
             x:Class="HeatHavnAppProject.Views.ElectricityPricesView"
              x:DataType="vm:ElectricityPricesViewModel"
@@ -10,7 +12,12 @@
 <ScrollViewer>
     <StackPanel Margin="20">
         <TextBlock Text="⚡ Electricity Prices" FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
-
+<lvc:CartesianChart 
+    Series="{Binding ElSeries}" 
+    XAxes="{Binding XAxes}" 
+    YAxes="{Binding YAxes}"
+    Height="200"
+    Margin="0,0,0,20"/>
         <ComboBox ItemsSource="{Binding Seasons}" SelectedItem="{Binding SelectedSeason}" Width="120" Margin="0,0,0,10"/>
 
         <ItemsControl ItemsSource="{Binding FilteredElectricityPrices}">
