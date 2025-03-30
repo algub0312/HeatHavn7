@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Mihai\\Documents\\GitHub\\HeatHavn7\\HeatHavnAppProject.csproj": {}
+    "C:\\Users\\gubau\\Documents\\GitHub\\HeatHavn7\\HeatHavnAppProject.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Mihai\\Documents\\GitHub\\HeatHavn7\\HeatHavnAppProject.csproj": {
+    "C:\\Users\\gubau\\Documents\\GitHub\\HeatHavn7\\HeatHavnAppProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Mihai\\Documents\\GitHub\\HeatHavn7\\HeatHavnAppProject.csproj",
+        "projectUniqueName": "C:\\Users\\gubau\\Documents\\GitHub\\HeatHavn7\\HeatHavnAppProject.csproj",
         "projectName": "HeatHavnAppProject",
-        "projectPath": "C:\\Users\\Mihai\\Documents\\GitHub\\HeatHavn7\\HeatHavnAppProject.csproj",
-        "packagesPath": "C:\\Users\\Mihai\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Mihai\\Documents\\GitHub\\HeatHavn7\\obj\\",
+        "projectPath": "C:\\Users\\gubau\\Documents\\GitHub\\HeatHavn7\\HeatHavnAppProject.csproj",
+        "packagesPath": "C:\\Users\\gubau\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\gubau\\Documents\\GitHub\\HeatHavn7\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Mihai\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\gubau\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -76,9 +76,17 @@
               "target": "Package",
               "version": "[33.0.1, )"
             },
+            "LiveCharts": {
+              "target": "Package",
+              "version": "[0.9.7, )"
+            },
             "LiveChartsCore.SkiaSharpView.Avalonia": {
               "target": "Package",
               "version": "[2.0.0-rc5.4, )"
+            },
+            "PropertyChanged.Fody": {
+              "target": "Package",
+              "version": "[4.1.0, )"
             },
             "ReactiveUI": {
               "target": "Package",
