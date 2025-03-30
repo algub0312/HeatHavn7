@@ -3,6 +3,8 @@
              xmlns:vm="clr-namespace:HeatHavnAppProject.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
+              xmlns:livecharts="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
                 x:Class="HeatHavnAppProject.Views.HeatDemandView"
                 x:DataType="vm:HeatDemandViewModel"
                 mc:Ignorable="d">
@@ -11,7 +13,12 @@
   <StackPanel Margin="20">
 
   <TextBlock Text="🔥 Heat Demand" FontSize="24" FontWeight="Bold" Margin="0,0,0,10"/>
-
+<lvc:CartesianChart 
+    Series="{Binding HeatSeries}" 
+    XAxes="{Binding XAxes}" 
+    YAxes="{Binding YAxes}"
+    Height="200"
+    Margin="0,0,0,20"/>
   <ComboBox
     ItemsSource="{Binding Seasons}"
     SelectedItem="{Binding SelectedSeason}"
