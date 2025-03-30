@@ -17,21 +17,21 @@ public class MainWindowViewModel : ViewModelBase
     }
 
 
-     public MainWindowViewModel()
-{
-    try
+    public MainWindowViewModel()
     {
-        var sourceManager = new SourceDataManagerViewModel();
-        sourceManager.LoadSummerDataHeat("Data/summerperiod.csv");
-        sourceManager.LoadWinterDataHeat("Data/winterperiod.csv");
-
-        sourceManager.LoadSummerDataEl("Data/summerperiod.csv");
-        sourceManager.LoadWinterDataEl("Data/winterperiod.csv");
-
-        var assetManagerVM = new AssetManagerViewModel();
-
-        Tabs = new ObservableCollection<object>
+        try
         {
+            var sourceManager = new SourceDataManagerViewModel();
+            sourceManager.LoadSummerDataHeat("Data/summerperiod.csv");
+            sourceManager.LoadWinterDataHeat("Data/winterperiod.csv");
+
+            sourceManager.LoadSummerDataEl("Data/summerperiod.csv");
+            sourceManager.LoadWinterDataEl("Data/winterperiod.csv");
+
+            var assetManagerVM = new AssetManagerViewModel();
+
+            Tabs = new ObservableCollection<object>
+        {   new HomePageViewModel(),
             new ProductionUnitsViewModel(assetManagerVM),
             new HeatDemandViewModel(sourceManager),
             new ElectricityPricesViewModel(sourceManager),
@@ -39,13 +39,13 @@ public class MainWindowViewModel : ViewModelBase
             new ViewModelBase()
         };
 
-        CurrentView = Tabs.First();
+            CurrentView = Tabs.First();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("💥 EROARE: " + ex.Message);
+        }
     }
-    catch (Exception ex)
-    {
-        Debug.WriteLine("💥 EROARE: " + ex.Message);
-    }
-}
 
 
 }

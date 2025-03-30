@@ -9,7 +9,7 @@ using ReactiveUI;
 
 public class HeatDemandViewModel : SeasonalViewModelBase
 {
-    public override string Title => "🔥Heat Demand";
+    public override string Title => "🔥 Heat Demand";
 
     public ObservableCollection<TimeSeriesEntry> FilteredHeatDemand { get; } = new();
 
@@ -23,7 +23,7 @@ public class HeatDemandViewModel : SeasonalViewModelBase
         Debug.WriteLine("Summer data count: " + _source.SummerDataHeat.Count);
         Debug.WriteLine("Winter data count: " + _source.WinterDataHeat.Count);
 
-        
+
         UpdateFilteredHeatDemand();
     }
     protected override void OnSeasonChanged()
@@ -34,7 +34,7 @@ public class HeatDemandViewModel : SeasonalViewModelBase
 
     private void UpdateFilteredHeatDemand()
     {
-         FilteredHeatDemand.Clear();
+        FilteredHeatDemand.Clear();
         var data = SelectedSeason == "Summer" ? _source.SummerDataHeat : _source.WinterDataHeat;
         foreach (var entry in data)
             FilteredHeatDemand.Add(entry);

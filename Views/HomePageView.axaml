@@ -3,9 +3,16 @@
              xmlns:vm="clr-namespace:HeatHavnAppProject.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                x:Class="HeatHavnAppProject.Views.OptimizerView" >
+
+                x:Class="HeatHavnAppProject.Views.HomePageView" >
+
              
  <StackPanel Margin="20">
-            <TextBlock Text="📈 Optimizer" FontSize="24" FontWeight="Bold" Margin="0,0,0,10"/>
+            <TextBlock Text="🏠 Home Page" FontSize="24" FontWeight="Bold" Margin="0,0,0,10"/>
+             <TextBlock Text="HeatHavn" Margin="0 20 0 0" HorizontalAlignment="Center" FontSize="20" VerticalAlignment="Center"/>
+    <Image Source="avares://HeatHavnAppProject/Assets/townmap.png" Width="550" Height="550" Margin="0 -50 0 0"/>
           </StackPanel>
+
+          
+
           </UserControl>  
