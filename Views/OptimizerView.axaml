@@ -3,9 +3,38 @@
              xmlns:vm="clr-namespace:HeatHavnAppProject.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                x:Class="HeatHavnAppProject.Views.OptimizerView" >
+             x:Class="HeatHavnAppProject.Views.OptimizerView"
+             x:DataType="vm:Optimizer"
+             mc:Ignorable="d">
              
- <StackPanel Margin="20">
-            <TextBlock Text="📈 Optimizer" FontSize="24" FontWeight="Bold" Margin="0,0,0,10"/>
-          </StackPanel>
-          </UserControl>  
+  <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Chart placeholder -->
+        <Border Grid.Column="0" Background="White" Margin="0,0,20,0">
+            <TextBlock Text="Chart Area" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray"/>
+        </Border>
+
+        <!-- Controls -->
+        <StackPanel Grid.Column="1" Spacing="10">
+            <TextBlock Text="Start Time:" FontWeight="Bold"/>
+            <DatePicker SelectedDate="{Binding StartDate}" />
+
+            <TextBlock Text="End Time:" FontWeight="Bold"/>
+            <DatePicker SelectedDate="{Binding EndDate}" />
+
+            <TextBlock Text="Optimize for:" FontWeight="Bold"/>
+            <ComboBox SelectedIndex="0">
+                <ComboBoxItem Content="Cost" />
+                <ComboBoxItem Content="Emissions" />
+            </ComboBox>
+
+            <CheckBox Content="Scenario 1" IsChecked="{Binding Scenario1Enabled}" />
+
+            <Button Content="Optimize" Command="{Binding OptimizeCommand}" />
+        </StackPanel>
+    </Grid>
+</UserControl>
