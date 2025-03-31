@@ -13,29 +13,33 @@
         <ColumnDefinition Width="*"/>
     </Grid.ColumnDefinitions>
 
-    <!-- Sidebar with Tab Titles -->
+    <!-- Sidebar with Tab Titles, DE AICI SCHIMBATI FUNDALUL DE LA TAB BAR-->
     <ListBox Grid.Column="0"
-             ItemsSource="{Binding Tabs}"
+             ItemsSource="{Binding Tabs}" 
              SelectedItem="{Binding CurrentView}"  
-             Background="#2C3E50"
+             Background="aliceblue" 
              BorderThickness="0">
         <ListBox.ItemTemplate>
             <DataTemplate x:DataType="vm:ViewModelBase">
+                <!-- DE AICI SCHIMBATI CUM ARATA TABURILE GEN IDK CA BUTON INTELEGETI VOI-->
+                <Border CornerRadius="8" Background="Gainsboro" Margin="5">
                 <TextBlock Text="{Binding Title}" 
                            Padding="10"
                            Foreground="White"
                            FontWeight="Bold"/>
+                </Border>
             </DataTemplate>
         </ListBox.ItemTemplate>
     </ListBox>
 
-    <!-- Single Content View -->
+    <!-- Single Content View BACKGROUNDUL GENERAL AL TABURILOR-->
     <ContentControl Grid.Column="1"
-                    Content="{Binding CurrentView}">
+                    Content="{Binding CurrentView}"
+                    Background="DarkGray">
         <ContentControl.DataTemplates>
-
-<DataTemplate x:DataType="vm:HomePageViewModel">
-                <views:HomePageView />
+<!-- DE AICI SE MODIFICA BACKGROUNDUL LA UN TAB SPECIFIC-->
+<DataTemplate x:DataType="vm:HomePageViewModel" >
+                <views:HomePageView Background=""/>
             </DataTemplate>
 
             <DataTemplate x:DataType="vm:ProductionUnitsViewModel">
