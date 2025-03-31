@@ -328,3 +328,5 @@ C:\Users\gubau\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\LiveCharts.dll
 C:\Users\gubau\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\PropertyChanged.dll
 C:\Users\gubau\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.CopyLocal.cache
 C:\Users\gubau\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.RuntimeCopyLocal.cache
+C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\LiveCharts.dll
+C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\PropertyChanged.dll
