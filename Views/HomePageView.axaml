@@ -7,7 +7,7 @@
                 x:Class="HeatHavnAppProject.Views.HomePageView" >
 
              
- <StackPanel Margin="20" Background="DarkSlateGray" >
+ <StackPanel Margin="20" >
       
             <TextBlock Text="🏠 Home Page" FontSize="24" FontWeight="Bold" Margin="0,0,0,10"/>
              <TextBlock Text="HeatHavn" Margin="0 20 0 0" HorizontalAlignment="Center" FontSize="20" VerticalAlignment="Center"/>
