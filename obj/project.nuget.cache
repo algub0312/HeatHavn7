@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "oV4fzcz9RsM=",
+  "dgSpecHash": "J4dGZE7akAA=",
   "success": true,
   "projectFilePath": "D:\\Lucru\\Fruit-Marine-Game\\HeatHavn7\\HeatHavnAppProject.csproj",
   "expectedPackageFiles": [
@@ -30,7 +30,6 @@
     "C:\\Users\\mihne\\.nuget\\packages\\harfbuzzsharp.nativeassets.macos\\7.3.0.3\\harfbuzzsharp.nativeassets.macos.7.3.0.3.nupkg.sha512",
     "C:\\Users\\mihne\\.nuget\\packages\\harfbuzzsharp.nativeassets.webassembly\\7.3.0.3-preview.2.2\\harfbuzzsharp.nativeassets.webassembly.7.3.0.3-preview.2.2.nupkg.sha512",
     "C:\\Users\\mihne\\.nuget\\packages\\harfbuzzsharp.nativeassets.win32\\7.3.0.3\\harfbuzzsharp.nativeassets.win32.7.3.0.3.nupkg.sha512",
-    "C:\\Users\\mihne\\.nuget\\packages\\livecharts\\0.9.7\\livecharts.0.9.7.nupkg.sha512",
     "C:\\Users\\mihne\\.nuget\\packages\\livechartscore\\2.0.0-rc5.4\\livechartscore.2.0.0-rc5.4.nupkg.sha512",
     "C:\\Users\\mihne\\.nuget\\packages\\livechartscore.skiasharpview\\2.0.0-rc5.4\\livechartscore.skiasharpview.2.0.0-rc5.4.nupkg.sha512",
     "C:\\Users\\mihne\\.nuget\\packages\\livechartscore.skiasharpview.avalonia\\2.0.0-rc5.4\\livechartscore.skiasharpview.avalonia.2.0.0-rc5.4.nupkg.sha512",
@@ -49,18 +48,15 @@
     "C:\\Users\\mihne\\.nuget\\packages\\system.io.pipelines\\8.0.0\\system.io.pipelines.8.0.0.nupkg.sha512",
     "C:\\Users\\mihne\\.nuget\\packages\\system.reactive\\6.0.1\\system.reactive.6.0.1.nupkg.sha512",
     "C:\\Users\\mihne\\.nuget\\packages\\system.text.json\\9.0.2\\system.text.json.9.0.2.nupkg.sha512",
-    "C:\\Users\\mihne\\.nuget\\packages\\tmds.dbus.protocol\\0.20.0\\tmds.dbus.protocol.0.20.0.nupkg.sha512"
+    "C:\\Users\\mihne\\.nuget\\packages\\tmds.dbus.protocol\\0.20.0\\tmds.dbus.protocol.0.20.0.nupkg.sha512",
+    "C:\\Users\\mihne\\.nuget\\packages\\xunit\\2.9.2\\xunit.2.9.2.nupkg.sha512",
+    "C:\\Users\\mihne\\.nuget\\packages\\xunit.abstractions\\2.0.3\\xunit.abstractions.2.0.3.nupkg.sha512",
+    "C:\\Users\\mihne\\.nuget\\packages\\xunit.analyzers\\1.16.0\\xunit.analyzers.1.16.0.nupkg.sha512",
+    "C:\\Users\\mihne\\.nuget\\packages\\xunit.assert\\2.9.2\\xunit.assert.2.9.2.nupkg.sha512",
+    "C:\\Users\\mihne\\.nuget\\packages\\xunit.core\\2.9.2\\xunit.core.2.9.2.nupkg.sha512",
+    "C:\\Users\\mihne\\.nuget\\packages\\xunit.extensibility.core\\2.9.2\\xunit.extensibility.core.2.9.2.nupkg.sha512",
+    "C:\\Users\\mihne\\.nuget\\packages\\xunit.extensibility.execution\\2.9.2\\xunit.extensibility.execution.2.9.2.nupkg.sha512",
+    "C:\\Users\\mihne\\.nuget\\packages\\xunit.runner.visualstudio\\2.8.2\\xunit.runner.visualstudio.2.8.2.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'LiveCharts 0.9.7' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net9.0'. This package may not be fully compatible with your project.",
-      "libraryId": "LiveCharts",
-      "targetGraphs": [
-        "net9.0"
-      ]
-    }
-  ]
+  "logs": []
 }

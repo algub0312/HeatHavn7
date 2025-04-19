@@ -15,7 +15,7 @@ public class SourceDataManagerViewModel : ViewModelBase
 {
     public ObservableCollection<TimeSeriesEntry> SummerDataHeat { get; } = new();
     public ObservableCollection<TimeSeriesEntry> WinterDataHeat { get; } = new();
-      public ObservableCollection<TimeSeriesEntry> SummerDataEl { get; } = new();
+    public ObservableCollection<TimeSeriesEntry> SummerDataEl { get; } = new();
     public ObservableCollection<TimeSeriesEntry> WinterDataEl { get; } = new();
     public void LoadSummerDataHeat(string filePath)
 {

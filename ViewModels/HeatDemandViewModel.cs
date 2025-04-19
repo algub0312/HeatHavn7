@@ -9,7 +9,6 @@ using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.Defaults;
 using SkiaSharp;
 using System.Diagnostics;
-using LiveChartsCore;
 using ReactiveUI;
 using System.Linq;
 namespace HeatHavnAppProject.ViewModels;
@@ -45,7 +44,7 @@ public class HeatDemandViewModel : SeasonalViewModelBase
     private void UpdateFilteredHeatDemand()
     {
          FilteredHeatDemand.Clear();
-        HeatDemandPoints.Clear(); // ← clears chart values
+         HeatDemandPoints.Clear(); // ← clears chart values
 
         var data = SelectedSeason == "Summer" ? _source.SummerDataHeat : _source.WinterDataHeat;
            foreach (var entry in data)
