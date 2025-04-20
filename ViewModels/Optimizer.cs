@@ -56,13 +56,13 @@ public int StartHour
     }
 }
 
-private string _startMonth = "March";
-public string StartMonth
+private string _Month = "March";
+public string Month
 {
-    get => _startMonth;
+    get => _Month;
     set
     {
-        this.RaiseAndSetIfChanged(ref _startMonth, value);
+        this.RaiseAndSetIfChanged(ref _Month, value);
         UpdateStartDate();
     }
 }
@@ -76,7 +76,7 @@ public DateTimeOffset? StartDate
 
 private void UpdateStartDate()
 {
-    var month = StartMonth == "August" ? 8 : 3;
+    var month = Month == "August" ? 8 : 3;
     StartDate = new DateTimeOffset(new DateTime(2024, month, StartDay, StartHour, 0, 0));
 }
 
@@ -102,16 +102,6 @@ public int EndHour
     }
 }
 
-private string _endMonth = "March";
-public string EndMonth
-{
-    get => _endMonth;
-    set
-    {
-        this.RaiseAndSetIfChanged(ref _endMonth, value);
-        UpdateEndDate();
-    }
-}
 
 private DateTimeOffset? _endDate = DateTimeOffset.Now;
 public DateTimeOffset? EndDate
@@ -122,17 +112,24 @@ public DateTimeOffset? EndDate
 
 private void UpdateEndDate()
 {
-    var month = EndMonth == "August" ? 8 : 3;
+    var month = Month == "August" ? 8 : 3;
     EndDate = new DateTimeOffset(new DateTime(2024, month, EndDay, EndHour, 0, 0));
 }
 
 
-    private bool _scenario1Enabled;
-    public bool Scenario1Enabled
-    {
-        get => _scenario1Enabled;
-        set => this.RaiseAndSetIfChanged(ref _scenario1Enabled, value);
-    }
+private bool _scenario1Enabled;
+public bool Scenario1Enabled
+{
+    get => _scenario1Enabled;
+    set => this.RaiseAndSetIfChanged(ref _scenario1Enabled, value);
+}
+
+private bool _scenario2Enabled;
+public bool Scenario2Enabled
+{
+    get => _scenario2Enabled;
+    set => this.RaiseAndSetIfChanged(ref _scenario2Enabled, value);
+}
     
     private void LoadDataDynamic(out List<TimeSeriesEntry> SummerEl, out List<TimeSeriesEntry> SummerHeat,  out List<TimeSeriesEntry> WinterEl, out List<TimeSeriesEntry> WinterHeat)
     {
