@@ -7,7 +7,7 @@ public class RawSourceDataEntry
 [TypeConverter(typeof(CustomDateTimeConverter))]
 public DateTime TimeFrom { get; set; }
 
-[Name("Time to")]
+    [Name("Time to")]
 [TypeConverter(typeof(CustomDateTimeConverter))]
 public DateTime TimeTo { get; set; }
 

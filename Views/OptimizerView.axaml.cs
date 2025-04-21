@@ -7,7 +7,7 @@ namespace HeatHavnAppProject.Views
     {
         public OptimizerView()
         {
-     InitializeComponent();
+            InitializeComponent();
         }
     }
 }
