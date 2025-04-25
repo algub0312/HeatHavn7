@@ -320,15 +320,12 @@ C:\Users\Mihai\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.ge
 C:\Users\Mihai\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\ref\HeatHavnAppProject.dll
 C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\summerperiod.csv
 C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\winterperiod.csv
-C:\Users\Mihai\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.CopyLocal.cache
-C:\Users\Mihai\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.RuntimeCopyLocal.cache
 C:\Users\gubau\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\summerperiod.csv
 C:\Users\gubau\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\winterperiod.csv
 C:\Users\gubau\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\LiveCharts.dll
 C:\Users\gubau\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\PropertyChanged.dll
 C:\Users\gubau\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.CopyLocal.cache
 C:\Users\gubau\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.RuntimeCopyLocal.cache
-C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\LiveCharts.dll
 C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\PropertyChanged.dll
 C:\Users\Claudiu\Desktop\SDU S.P.1\HeatHavn7\bin\Debug\net9.0\Data\summerperiod.csv
 C:\Users\Claudiu\Desktop\SDU S.P.1\HeatHavn7\bin\Debug\net9.0\Data\winterperiod.csv
@@ -505,3 +502,15 @@ D:\Lucru\Fruit-Marine-Game\HeatHavn7\obj\Debug\net9.0\refint\Avalonia\HeatHavnAp
 D:\Lucru\Fruit-Marine-Game\HeatHavn7\obj\Debug\net9.0\HeatHavn.A278E633.Up2Date
 D:\Lucru\Fruit-Marine-Game\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.genruntimeconfig.cache
 D:\Lucru\Fruit-Marine-Game\HeatHavn7\obj\Debug\net9.0\ref\HeatHavnAppProject.dll
+C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\xunit.runner.visualstudio.testadapter.dll
+C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\xunit.runner.reporters.netcoreapp10.dll
+C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\xunit.runner.utility.netcoreapp10.dll
+C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Avalonia.Xaml.Interactivity.dll
+C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\xunit.abstractions.dll
+C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\xunit.assert.dll
+C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\xunit.core.dll
+C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\xunit.execution.dotnet.dll
+C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Avalonia.Xaml.Interactions.dll
+C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\optimization_results.csv
+C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\optimizer_results.csv
+C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\optimization_emissions.csv

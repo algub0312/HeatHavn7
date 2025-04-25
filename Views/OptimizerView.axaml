@@ -1,66 +1,68 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:HeatHavnAppProject.ViewModels"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
+<UserControl
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="clr-namespace:HeatHavnAppProject.ViewModels"
+  xmlns:conv="clr-namespace:HeatHavnAppProject.Converters"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
+  xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+  xmlns:ic="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+  x:Class="HeatHavnAppProject.Views.OptimizerView"
+  x:DataType="vm:Optimizer"
+  mc:Ignorable="d">
 
-             x:Class="HeatHavnAppProject.Views.OptimizerView"
-             x:DataType="vm:Optimizer"
-             mc:Ignorable="d">
+  <Grid Margin="20">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="3*" />
+      <ColumnDefinition Width="2*" />
+    </Grid.ColumnDefinitions>
 
-    <Grid Margin="20">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="2*" />
-        </Grid.ColumnDefinitions>
+    <!-- Charts -->
+    <StackPanel Grid.Column="0">
+<ComboBox
+  ItemsSource="{Binding Metrics}"
+  SelectedItem="{Binding SelectedMetric}"
+  Width="120"/>
 
-        <!-- Charts go in column 0 -->
-        <StackPanel Grid.Column="0">
-            <TextBlock Text="Cost Over Time" FontWeight="Bold" Margin="0 10" />
-            <lvc:CartesianChart Series="{Binding Optimised_Cost}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes}" Height="250"/>
-
-            <TextBlock Text="CO2 Over Time" FontWeight="Bold" Margin="20 10 0 0" />
-            <lvc:CartesianChart Series="{Binding Optimised_CO2}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes2}" Height="250"/>
-        </StackPanel>
-
-        <!-- Controls go in column 1 -->
-       <StackPanel Grid.Column="1" Spacing="10">
-         <TextBlock Text="Start Date:" FontWeight="Bold"/>
-
-<StackPanel Orientation="Horizontal" Spacing="10">
-    <TextBlock Text="Day:" VerticalAlignment="Center"/>
-    <ComboBox ItemsSource="{Binding Days}" SelectedItem="{Binding StartDay}" Width="60"/>
-
-    <TextBlock Text="Hour" VerticalAlignment="Center"/>    
-    <ComboBox ItemsSource="{Binding Hours}" SelectedItem="{Binding StartHour}" Width="60"/>
-            
-        
-                    
-  
-</StackPanel>
+<TextBlock
+  Text="{Binding SelectedMetricText}"
+  FontWeight="Bold"
+  Margin="0,10"/>
 
 
-<TextBlock Text="End Date:" FontWeight="Bold" Margin="0,10,0,0"/>
-<StackPanel Orientation="Horizontal" Spacing="10">
-    <TextBlock Text="Day:" VerticalAlignment="Center"/>
-    <ComboBox ItemsSource="{Binding Days}" SelectedItem="{Binding EndDay}" Width="60"/>
-    
-    <TextBlock Text="Hour:" VerticalAlignment="Center"/>
-    <ComboBox ItemsSource="{Binding Hours}" SelectedItem="{Binding EndHour}" Width="60"/>
-    
 
-    
-    
-</StackPanel>
-    <TextBlock Text="Month:" FontWeight="Bold"/>        
-    <ComboBox ItemsSource="{Binding Months}" SelectedItem="{Binding Month}" Width="90"/>
-                       
-           
-            <CheckBox Content="Scenario 1" IsChecked="{Binding Scenario1Enabled}" />
-            <CheckBox Content="Scenario 2" IsChecked="{Binding Scenario2Enabled}" />
+    </StackPanel>
 
-            <Button Content="Optimize" Command="{Binding OptimizeCommand}" />
-        </StackPanel>
-    </Grid>
+    <!-- Controls -->
+    <StackPanel Grid.Column="1" Spacing="10">
+      <TextBlock Text="Start Date:" FontWeight="Bold"/>
+
+      <StackPanel Orientation="Horizontal" Spacing="10">
+        <TextBlock Text="Day:" VerticalAlignment="Center"/>
+        <ComboBox ItemsSource="{Binding Days}" SelectedItem="{Binding StartDay}" Width="60"/>
+
+        <TextBlock Text="Hour:" VerticalAlignment="Center"/>
+        <ComboBox ItemsSource="{Binding Hours}" SelectedItem="{Binding StartHour}" Width="60"/>
+      </StackPanel>
+
+      <TextBlock Text="End Date:" FontWeight="Bold" Margin="0,10,0,0"/>
+      <StackPanel Orientation="Horizontal" Spacing="10">
+        <TextBlock Text="Day:" VerticalAlignment="Center"/>
+        <ComboBox ItemsSource="{Binding Days}" SelectedItem="{Binding EndDay}" Width="60"/>
+
+        <TextBlock Text="Hour:" VerticalAlignment="Center"/>
+        <ComboBox ItemsSource="{Binding Hours}" SelectedItem="{Binding EndHour}" Width="60"/>
+      </StackPanel>
+
+      <TextBlock Text="Month:" FontWeight="Bold"/>        
+      <ComboBox ItemsSource="{Binding Months}" SelectedItem="{Binding Month}" Width="90"/>
+
+      <CheckBox Content="Scenario 1" IsChecked="{Binding Scenario1Enabled}" />
+      <CheckBox Content="Scenario 2" IsChecked="{Binding Scenario2Enabled}" />
+
+      <Button Content="Optimize" Command="{Binding OptimizeCommand}" />
+      <!-- Optional manual reload -->
+    </StackPanel>
+  </Grid>
 </UserControl>

@@ -1,0 +1,22 @@
+2025-04-23T01:45:04.9280250+02:00 OptimizeCommand fired
+2025-04-23T01:45:04.9340842+02:00  season=1, metric=Cost
+2025-04-23T01:45:04.9524526+02:00  costList=0, emisList=0
+2025-04-23T01:45:04.9542780+02:00  Writing CSV to C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\optimization_results.csv
+2025-04-23T01:45:04.9555284+02:00  Wrote 0 cost rows
+2025-04-23T01:45:04.9564027+02:00  done updating series
+2025-04-23T10:28:31.9462235+02:00 Optimize fired: Month=March (3), season=2
+2025-04-23T10:28:31.9932108+02:00  Writing CSV to C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\optimization_results.csv
+2025-04-23T10:28:32.0367109+02:00  Wrote 6 cost rows
+2025-04-23T10:28:32.0374752+02:00 done
+2025-04-23T10:29:00.2435760+02:00 Optimize fired: Month=August (8), season=1
+2025-04-23T10:29:00.2692122+02:00  Writing CSV to C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\optimization_results.csv
+2025-04-23T10:29:00.2706196+02:00  Wrote 0 cost rows
+2025-04-23T10:29:00.2713919+02:00 done
+2025-04-23T10:29:23.4500365+02:00 Optimize fired: Month=August (8), season=1
+2025-04-23T10:29:23.4724115+02:00  Writing CSV to C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\optimization_results.csv
+2025-04-23T10:29:23.4734699+02:00  Wrote 0 cost rows
+2025-04-23T10:29:23.4741651+02:00 done
+2025-04-23T10:29:45.7490669+02:00 Optimize fired: Month=March (3), season=2
+2025-04-23T10:29:45.7875431+02:00  Writing CSV to C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\optimization_results.csv
+2025-04-23T10:29:45.7909098+02:00  Wrote 12 cost rows
+2025-04-23T10:29:45.7915106+02:00 done

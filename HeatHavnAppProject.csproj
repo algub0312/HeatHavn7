@@ -16,6 +16,15 @@
   <None Update="Data\winterperiod.csv">
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </None>
+   <None Include="Data\optimization_results.csv">
+    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+  </None>
+   <None Include="Data\optimizer_results.csv">
+    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+  </None>
+   <None Include="Data\optimization_emissions.csv">
+    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+  </None>
 </ItemGroup>
 
 
@@ -35,8 +44,14 @@
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Avalonia.Xaml.Interactions" Version="1.*" />
+    <PackageReference Include="Avalonia.Xaml.Interactivity" Version="1.*" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
     <PackageReference Include="CsvHelper" Version="33.0.1" />
+    <PackageReference Include="Fody" Version="6.9.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="LiveChartsCore" Version="2.0.0-rc5.4" />
     <PackageReference Include="LiveChartsCore.SkiaSharpView" Version="2.0.0-rc5.4" />
     <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc5.4" />

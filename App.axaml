@@ -1,13 +1,17 @@
-<Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="HeatHavnAppProject.App"
-             xmlns:local="using:HeatHavnAppProject"
-             RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-
-    
+<Application
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:local="using:HeatHavnAppProject"
+  xmlns:conv="clr-namespace:HeatHavnAppProject.Converters"
+  x:Class="HeatHavnAppProject.App"
+  RequestedThemeVariant="Default">
   
-    <Application.Styles>
-        <FluentTheme />
-    </Application.Styles>
+  <Application.Resources>
+    <conv:EnumToStringConverter x:Key="EnumToStringConverter" />
+    <conv:MetricToAxisConverter x:Key="MetricToAxisConverter" />
+  </Application.Resources>
+
+  <Application.Styles>
+    <FluentTheme />
+  </Application.Styles>
 </Application>

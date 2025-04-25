@@ -35,7 +35,7 @@ public class MainWindowViewModel : ViewModelBase
             new ProductionUnitsViewModel(assetManagerVM),
             new HeatDemandViewModel(sourceManager),
             new ElectricityPricesViewModel(sourceManager),
-            new Optimizer(),
+            new Optimizer(sourceManager),
             new ViewModelBase()
         };
 
