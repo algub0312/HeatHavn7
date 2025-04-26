@@ -511,6 +511,5 @@ C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\xunit.assert.dll
 C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\xunit.core.dll
 C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\xunit.execution.dotnet.dll
 C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Avalonia.Xaml.Interactions.dll
-C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\optimization_results.csv
 C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\optimizer_results.csv
 C:\Users\Mihai\Documents\GitHub\HeatHavn7\bin\Debug\net9.0\Data\optimization_emissions.csv

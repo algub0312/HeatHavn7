@@ -1,157 +1,159 @@
-namespace HeatHavnAppProject.ViewModels;
-
-using System;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reactive;
-using CsvHelper;
-using ReactiveUI;
-using HeatHavnAppProject.Models;
-using System.Collections.Generic;
-
-public partial class Optimizer : ViewModelBase
+namespace HeatHavnAppProject.ViewModels
 {
-    public enum MetricType { Cost, Emissions }
+    using LiveChartsCore;
+    using LiveChartsCore.SkiaSharpView;
+    using LiveChartsCore.SkiaSharpView.Painting;
+    using ReactiveUI;
+    using SkiaSharp;
+    using System;
+    using System.Collections.ObjectModel;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Reactive;
+    using System.Threading.Tasks;
+    using CsvHelper;
+    using HeatHavnAppProject.Models;
+    using System.Collections.Generic;
 
-    public ObservableCollection<int> Days { get; } = new(Enumerable.Range(1, 31));
-    public ObservableCollection<int> Hours { get; } = new(Enumerable.Range(0, 24));
-    public ObservableCollection<int> Months { get; } = new() { 3, 8 };
-    public ObservableCollection<MetricType> Metrics { get; } = new() { MetricType.Cost, MetricType.Emissions };
-public string SelectedMetricText => $"{SelectedMetric} Over Time";
-
-    private int _startDay = 1;
-    public int StartDay
+    public partial class Optimizer : ViewModelBase
     {
-        get => _startDay;
-        set => this.RaiseAndSetIfChanged(ref _startDay, value);
-    }
+        // backing collection & series for the chart
+        private readonly ObservableCollection<double> _chartValues;
+        private readonly LineSeries<double> _series;
 
-    private int _startHour = 0;
-    public int StartHour
-    {
-        get => _startHour;
-        set => this.RaiseAndSetIfChanged(ref _startHour, value);
-    }
+        // Exposed to XAML: Series="{Binding OptimizerSeries}"
+        public ISeries[] OptimizerSeries => new[] { _series };
 
-    private int _endDay = 1;
-    public int EndDay
-    {
-        get => _endDay;
-        set => this.RaiseAndSetIfChanged(ref _endDay, value);
-    }
+        public enum MetricType { Cost, Emissions }
 
-    private int _endHour = 23;
-    public int EndHour
-    {
-        get => _endHour;
-        set => this.RaiseAndSetIfChanged(ref _endHour, value);
-    }
+        // UI pickers
+        public ObservableCollection<int> Days    { get; } = new(Enumerable.Range(1, 31));
+        public ObservableCollection<int> Hours   { get; } = new(Enumerable.Range(0, 24));
+        public ObservableCollection<int> Months  { get; } = new() { 3, 8 };
+        public ObservableCollection<MetricType> Metrics { get; } 
+            = new() { MetricType.Cost, MetricType.Emissions };
 
-    private int _month = 3;
-    public int Month
-    {
-        get => _month;
-        set => this.RaiseAndSetIfChanged(ref _month, value);
-    }
+        public string SelectedMetricText => $"{SelectedMetric} Over Time";
 
-    private bool _scenario1Enabled = true;
-    public bool Scenario1Enabled
-    {
-        get => _scenario1Enabled;
-        set => this.RaiseAndSetIfChanged(ref _scenario1Enabled, value);
-    }
+        // Selected values
+        private int _startDay = 1;     public int StartDay   { get => _startDay;   set => this.RaiseAndSetIfChanged(ref _startDay, value); }
+        private int _startHour = 0;    public int StartHour  { get => _startHour;  set => this.RaiseAndSetIfChanged(ref _startHour, value); }
+        private int _endDay = 1;       public int EndDay     { get => _endDay;     set => this.RaiseAndSetIfChanged(ref _endDay, value); }
+        private int _endHour = 23;     public int EndHour    { get => _endHour;    set => this.RaiseAndSetIfChanged(ref _endHour, value); }
+        private int _month = 3;        public int Month      { get => _month;      set => this.RaiseAndSetIfChanged(ref _month, value); }
+        private bool _scenario1Enabled = true;  public bool Scenario1Enabled { get => _scenario1Enabled; set => this.RaiseAndSetIfChanged(ref _scenario1Enabled, value); }
+        private bool _scenario2Enabled;         public bool Scenario2Enabled { get => _scenario2Enabled; set => this.RaiseAndSetIfChanged(ref _scenario2Enabled, value); }
+        private MetricType _selectedMetric = MetricType.Cost;
+        public MetricType SelectedMetric
+        {
+            get => _selectedMetric;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _selectedMetric, value);
+                this.RaisePropertyChanged(nameof(SelectedMetricText));
+            }
+        }
 
-    private bool _scenario2Enabled;
-    public bool Scenario2Enabled
-    {
-        get => _scenario2Enabled;
-        set => this.RaiseAndSetIfChanged(ref _scenario2Enabled, value);
-    }
+        private readonly SourceDataManagerViewModel _source;
+        private readonly AssetManager _assetManager;
 
-    private MetricType _selectedMetric = MetricType.Cost;
-    public MetricType SelectedMetric
+        // The command bound to your Optimize button
+        public ReactiveCommand<Unit, Unit> OptimizeCommand { get; }
+
+        public Optimizer(SourceDataManagerViewModel source)
+        {
+            _source       = source ?? throw new ArgumentNullException(nameof(source));
+            _assetManager = new AssetManager();
+
+            // 1) initialize chart data & series
+            _chartValues = new ObservableCollection<double>();
+            _series = new LineSeries<double>
+            {
+                Values       = _chartValues,
+                GeometrySize = 5,
+                Stroke       = new SolidColorPaint(SKColors.OrangeRed, 2),
+                Fill         = null
+            };
+            // start empty
+            _chartValues.Clear();
+
+            // 2) wire up the command so it writes & reloads CSV on each click
+            OptimizeCommand = ReactiveCommand.CreateFromTask(OptimizeAsync);
+        }
+
+      private async Task OptimizeAsync()
 {
-    get => _selectedMetric;
-    set
+    try
     {
-        this.RaiseAndSetIfChanged(ref _selectedMetric, value);
-        this.RaisePropertyChanged(nameof(SelectedMetricText));
+        // 1) Compute the lines
+        var start  = new DateTime(2024, Month, StartDay,  StartHour, 0, 0);
+        var end    = new DateTime(2024, Month, EndDay,    EndHour,   0, 0);
+        var source = Month == 8 ? _source.SummerDataHeat : _source.WinterDataHeat;
+        var window = source.Where(x => x.Timestamp >= start && x.Timestamp <= end).ToList();
+
+        var units = _assetManager.GetAllUnits()
+            .Where(u => u.Name.StartsWith("Gas Boiler") || u.Name.StartsWith("Oil Boiler"))
+            .OrderBy(u => SelectedMetric == MetricType.Cost ? u.ProductionCosts : u.CO2Emissions)
+            .ToList();
+
+        var lines = window.Select(hour =>
+        {
+            double demand = hour.Value;
+            double filled = 0, sum = 0;
+            foreach (var u in units)
+            {
+                if (filled >= demand) break;
+                var take = Math.Min(u.MaxHeat, demand - filled);
+                filled += take;
+                sum    += take * (SelectedMetric == MetricType.Cost ? u.ProductionCosts : u.CO2Emissions);
+            }
+            return $"{hour.Timestamp:MM/dd/HH}:00 {sum:0.##}";
+        }).ToList();
+
+        // 2) Ensure Data folder exists
+        var projectDataDir = Path.Combine(Directory.GetCurrentDirectory(), "Data");
+        Directory.CreateDirectory(projectDataDir);
+
+        // 3) Write CSV there
+        var csvPath = Path.Combine(projectDataDir, "optimizer_results.csv");
+        Console.WriteLine($"[DEBUG] Writing CSV to: {csvPath}");
+        File.WriteAllLines(csvPath, lines);
+
+        // 4) Read back immediately to populate the chart
+        await LoadOptimizerResults(csvPath);
+    }
+    catch (Exception ex)
+    {
+        // Quick logging so we can see if anything went wrong
+        var log = Path.Combine(Directory.GetCurrentDirectory(), "Data", "optimizer_error.log");
+        File.WriteAllText(log, ex.ToString());
+        Console.WriteLine($"[ERROR] {ex}");
+        throw;
     }
 }
 
-    private readonly SourceDataManagerViewModel _source;
-    private readonly AssetManager _assetManager;
 
-    public Optimizer(SourceDataManagerViewModel source)
-    {
-        _source = source;
-        _assetManager = new AssetManager();
-OptimizeCommand = ReactiveCommand.CreateFromTask(async () =>
+
+      private async Task LoadOptimizerResults(string path)
 {
-    await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(RunOptimization);
-});
-    }
+    if (!File.Exists(path)) return;
 
-    public ReactiveCommand<Unit, Unit> OptimizeCommand { get; }
+    var values = File.ReadAllLines(path)
+        .Select(line =>
+        {
+            var parts = line.Split(' ');
+            return double.TryParse(parts[1], out var v) ? v : 0d;
+        })
+        .ToList();
 
-  private void RunOptimization()
-{
-    Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+    await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
     {
-        try
-        {
-            if (!Scenario1Enabled) return;
-
-            var start = new DateTime(2024, Month, StartDay, StartHour, 0, 0);
-            var end = new DateTime(2024, Month, EndDay, EndHour, 0, 0);
-
-            var data = Month == 8 ? _source.SummerDataHeat : _source.WinterDataHeat;
-
-            Console.WriteLine($"🔍 Filtering from {start} to {end} (Month: {Month})");
-            Console.WriteLine($"📊 Total entries: {data.Count}");
-
-            var range = data.Where(x => x.Timestamp >= start && x.Timestamp <= end).ToList();
-
-            Console.WriteLine($"✅ Filtered entries for range: {range.Count}");
-
-            var units = _assetManager.GetAllUnits()
-                .Where(x => x.Name.StartsWith("Gas Boiler") || x.Name.StartsWith("Oil Boiler"))
-                .OrderBy(x => SelectedMetric == MetricType.Cost ? x.ProductionCosts : x.CO2Emissions)
-                .ToList();
-
-            var results = new List<string>();
-
-            foreach (var hour in range)
-            {
-                double demand = hour.Value;
-                double total = 0;
-                double metricSum = 0;
-
-                foreach (var unit in units)
-                {
-                    if (total >= demand) break;
-                    var available = Math.Min(unit.MaxHeat, demand - total);
-                    total += available;
-                    metricSum += available * (SelectedMetric == MetricType.Cost ? unit.ProductionCosts : unit.CO2Emissions);
-                }
-
-                results.Add($"{hour.Timestamp:MM/dd/HH}:00 {metricSum:0.##}");
-            }
-
-            Directory.CreateDirectory("data");
-            using var writer = new StreamWriter("data/optimizer_results.csv");
-            foreach (var line in results)
-                writer.WriteLine(line);
-
-            Console.WriteLine("✅ Optimization complete. Results written to data/optimizer_results.csv");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"❌ ERROR: {ex.Message}");
-            Console.WriteLine($"📄 STACK TRACE: {ex.StackTrace}");
-        }
+        _chartValues.Clear();
+        foreach (var v in values)
+            _chartValues.Add(v);
     });
 }
+
+    }
 }

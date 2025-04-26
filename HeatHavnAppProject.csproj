@@ -16,9 +16,7 @@
   <None Update="Data\winterperiod.csv">
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </None>
-   <None Include="Data\optimization_results.csv">
-    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-  </None>
+
    <None Include="Data\optimizer_results.csv">
     <CopyToOutputDirectory>Always</CopyToOutputDirectory>
   </None>

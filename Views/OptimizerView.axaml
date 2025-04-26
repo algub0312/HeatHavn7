@@ -30,7 +30,9 @@
   FontWeight="Bold"
   Margin="0,10"/>
 
-
+<lvc:CartesianChart Series="{Binding OptimizerSeries}"
+    Height="200"
+    Margin="0,0,0,20"/>
 
     </StackPanel>
 
@@ -61,7 +63,7 @@
       <CheckBox Content="Scenario 1" IsChecked="{Binding Scenario1Enabled}" />
       <CheckBox Content="Scenario 2" IsChecked="{Binding Scenario2Enabled}" />
 
-      <Button Content="Optimize" Command="{Binding OptimizeCommand}" />
+<Button Command="{Binding OptimizeCommand}" Content="Optimize" />
       <!-- Optional manual reload -->
     </StackPanel>
   </Grid>
