@@ -414,5 +414,3 @@ C:\Users\Claudiu\Desktop\SDU S.P.1\HeatHavn7\obj\Debug\net9.0\refint\Avalonia\He
 C:\Users\Claudiu\Desktop\SDU S.P.1\HeatHavn7\obj\Debug\net9.0\HeatHavn.A278E633.Up2Date
 C:\Users\Claudiu\Desktop\SDU S.P.1\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.genruntimeconfig.cache
 C:\Users\Claudiu\Desktop\SDU S.P.1\HeatHavn7\obj\Debug\net9.0\ref\HeatHavnAppProject.dll
-C:\Users\gubau\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.CopyLocal.cache
-C:\Users\gubau\Documents\GitHub\HeatHavn7\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.RuntimeCopyLocal.cache

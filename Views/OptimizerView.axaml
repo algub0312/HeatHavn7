@@ -46,10 +46,12 @@
 </StackPanel>
 
             <TextBlock Text="Optimize for:" FontWeight="Bold"/>
-            <ComboBox SelectedIndex="0">
-                <ComboBoxItem Content="Cost" />
-                <ComboBoxItem Content="Emissions" />
-            </ComboBox>
+            <ComboBox SelectedItem="{Binding SelectedOptimization}" Width="150">
+    <ComboBox.Items>
+        <x:String>Cost</x:String>
+        <x:String>Emissions</x:String>
+    </ComboBox.Items>
+</ComboBox>
 
             <CheckBox Content="Scenario 1" IsChecked="{Binding Scenario1Enabled}" />
 

@@ -133,6 +133,13 @@ public class Optimizer : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _scenario1Enabled, value);
     }
 
+    private string _selectedOptimization = "Cost";
+    public string SelectedOptimization
+    {
+        get => _selectedOptimization;
+        set => this.RaiseAndSetIfChanged(ref _selectedOptimization, value);
+    }
+
     public ICommand OptimizeCommand { get; }
 
     public Optimizer(SourceDataManagerViewModel sourceDataManager, AssetManager assetManager)
@@ -164,7 +171,24 @@ public class Optimizer : ViewModelBase
     DateTime endDate = EndDate.Value.DateTime;
     var outputCsvPath = "Data/optimization_results.csv";
 
-    OptimizeCostScenario1AndSaveToCsv(productionUnits, heatDemandEntries, startDate, endDate, "Data/optimization_results.csv");
+
+
+    if (SelectedOptimization == "Cost")
+    {
+        Console.WriteLine("Optimizing by COST...");
+        OptimizeCostScenario1AndSaveToCsv(productionUnits, heatDemandEntries, startDate, endDate, outputCsvPath);
+    }
+    else if (SelectedOptimization == "Emissions")
+    {
+        Console.WriteLine("Optimizing by EMISSIONS...");
+        OptimizeEmissionsScenario1AndSaveToCsv(productionUnits, heatDemandEntries, startDate, endDate, outputCsvPath);
+    }
+    else
+    {
+        Console.WriteLine("Unknown optimization type!");
+        return;
+    }
+
     LoadGraphFromCsv(outputCsvPath);
     Console.WriteLine("Optimization finished and saved to CSV!");
 });
@@ -226,6 +250,67 @@ public class Optimizer : ViewModelBase
         }
 
         Console.WriteLine($"✅ Optimization results saved to {outputCsvPath}");
+    }
+
+
+
+    private void OptimizeEmissionsScenario1AndSaveToCsv(
+    List<ProductionUnit> units,
+    List<TimeSeriesEntry> demandEntries,
+    DateTime startDate,
+    DateTime endDate,
+    string outputCsvPath)
+    {
+        var sortedUnits = units
+            .Where(u => u.EnergyType == "Gas" || u.EnergyType == "Oil") // doar boilere
+            .OrderBy(u => u.CO2Emissions) // 🔥 AICI schimbăm criteriul de sortare!
+            .ToList();
+
+        Debug.WriteLine($"Found {sortedUnits.Count} production units (sorted by CO2 emissions).");
+
+        var results = new List<(DateTime TimeFrom, double GB1, double GB2, double OB1, double HeatDemand)>();
+
+        foreach (var demand in demandEntries.Where(d => d.Timestamp >= startDate && d.Timestamp < endDate))
+        {
+            double heatNeeded = demand.Value;
+            double gb1 = 0, gb2 = 0, ob1 = 0;
+
+            foreach (var unit in sortedUnits)
+            {
+                if (heatNeeded <= 0)
+                    break;
+
+                double heatFromUnit = Math.Min(unit.MaxHeat, heatNeeded);
+
+                if (unit.Name.Contains("Gas Boiler 1"))
+                    gb1 += heatFromUnit;
+                else if (unit.Name.Contains("Gas Boiler 2"))
+                    gb2 += heatFromUnit;
+                else if (unit.Name.Contains("Oil Boiler 1"))
+                    ob1 += heatFromUnit;
+
+                heatNeeded -= heatFromUnit;
+            }
+
+            results.Add((demand.Timestamp, gb1, gb2, ob1, demand.Value));
+        }
+
+        var directory = Path.GetDirectoryName(outputCsvPath);
+        if (!Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
+        using (var writer = new StreamWriter(outputCsvPath))
+        {
+            writer.WriteLine("TimeFrom,GB1,GB2,OB1,HeatDemand");
+            foreach (var result in results)
+            {
+                writer.WriteLine($"{result.TimeFrom:yyyy-MM-dd HH:mm},{result.GB1:F2},{result.GB2:F2},{result.OB1:F2},{result.HeatDemand:F2}");
+            }
+        }
+
+        Console.WriteLine($"✅ Emissions optimization results saved to {outputCsvPath}");
     }
 
 
