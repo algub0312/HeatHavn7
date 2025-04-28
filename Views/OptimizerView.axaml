@@ -2,6 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:HeatHavnAppProject.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
+
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              x:Class="HeatHavnAppProject.Views.OptimizerView"
              x:DataType="vm:Optimizer"
@@ -14,9 +16,12 @@
         </Grid.ColumnDefinitions>
 
         <!-- Chart placeholder -->
-        <Border Grid.Column="0" Background="White" Margin="0,0,20,0">
-            <TextBlock Text="Chart Area" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray"/>
-        </Border>
+        <lvc:CartesianChart
+    Series="{Binding Series}"
+    XAxes="{Binding XAxes}"
+    YAxes="{Binding YAxes}"
+    Height="400"
+    Margin="10"/>
 
         <!-- Controls -->
         <StackPanel Grid.Column="1" Spacing="10">
