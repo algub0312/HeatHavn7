@@ -23,6 +23,14 @@
     Height="400"
     Margin="10"/>
 
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+    <TextBlock Text="Total Cost: " FontWeight="Bold"/>
+    <TextBlock Text="{Binding TotalCost, StringFormat='{}{0:F2} DKK'}" Margin="10,0,20,0"/>
+
+    <TextBlock Text="Total CO2: " FontWeight="Bold"/>
+    <TextBlock Text="{Binding TotalCO2, StringFormat='{}{0:F2} kg'}"/>
+</StackPanel>
+
         <!-- Controls -->
         <StackPanel Grid.Column="1" Spacing="10">
          <TextBlock Text="Start Date:" FontWeight="Bold"/>

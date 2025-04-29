@@ -44,6 +44,20 @@ public class Optimizer : ViewModelBase
         }
     }
 
+    private double _totalCost;
+    public double TotalCost
+    {
+        get => _totalCost;
+        set => this.RaiseAndSetIfChanged(ref _totalCost, value);
+    }
+
+    private double _totalCO2;
+    public double TotalCO2
+    {
+        get => _totalCO2;
+        set => this.RaiseAndSetIfChanged(ref _totalCO2, value);
+    }
+
     private int _startHour = 0;
     public int StartHour
     {
@@ -201,17 +215,23 @@ public class Optimizer : ViewModelBase
         DateTime endDate,
         string outputCsvPath)
     {
+
+        double totalCost = 0;
+        double totalCO2 = 0;
+
         var sortedUnits = units
             .Where(u => u.EnergyType == "Gas" || u.EnergyType == "Oil") // doar boilere
             .OrderBy(u => u.ProductionCosts)
             .ToList();
         Debug.WriteLine($"Found {sortedUnits.Count} production units.");
-        var results = new List<(DateTime TimeFrom, double GB1, double GB2, double OB1, double HeatDemand)>();
+        var results = new List<(DateTime TimeFrom, double GB1, double GB2, double OB1, double HeatDemand, double hourlyCO2)>();
 
         foreach (var demand in demandEntries.Where(d => d.Timestamp >= startDate && d.Timestamp < endDate))
         {
             double heatNeeded = demand.Value;
             double gb1 = 0, gb2 = 0, ob1 = 0;
+            double hourlyCO2 = 0;
+            double hourlyCost = 0;
 
             foreach (var unit in sortedUnits)
             {
@@ -226,11 +246,18 @@ public class Optimizer : ViewModelBase
                     gb2 += heatFromUnit;
                 else if (unit.Name.Contains("Oil Boiler 1"))
                     ob1 += heatFromUnit;
-
+                hourlyCO2 += heatFromUnit * unit.CO2Emissions;
                 heatNeeded -= heatFromUnit;
-            }
 
-            results.Add((demand.Timestamp, gb1, gb2, ob1, demand.Value));
+                hourlyCost += heatFromUnit * unit.ProductionCosts;
+
+
+            }
+            totalCost += hourlyCost;
+            totalCO2 += hourlyCO2;
+            results.Add((demand.Timestamp, gb1, gb2, ob1, demand.Value, totalCO2));
+
+
         }
 
         var directory = Path.GetDirectoryName(outputCsvPath);
@@ -242,14 +269,17 @@ public class Optimizer : ViewModelBase
 
         using (var writer = new StreamWriter(outputCsvPath))
         {
-            writer.WriteLine("TimeFrom,GB1,GB2,OB1,HeatDemand");
+            writer.WriteLine("TimeFrom,GB1,GB2,OB1,HeatDemand,CO2");
             foreach (var result in results)
             {
-                writer.WriteLine($"{result.TimeFrom:yyyy-MM-dd HH:mm},{result.GB1:F2},{result.GB2:F2},{result.OB1:F2},{result.HeatDemand:F2}");
+                writer.WriteLine($"{result.TimeFrom:yyyy-MM-dd HH:mm},{result.GB1:F2},{result.GB2:F2},{result.OB1:F2},{result.HeatDemand:F2},{result.hourlyCO2:F2}");
             }
         }
 
         Console.WriteLine($"✅ Optimization results saved to {outputCsvPath}");
+
+        TotalCost = totalCost;     // dacă ai o variabilă calculată
+        TotalCO2 = totalCO2;
     }
 
 
@@ -261,6 +291,8 @@ public class Optimizer : ViewModelBase
     DateTime endDate,
     string outputCsvPath)
     {
+        double totalCost = 0;
+        double totalCO2 = 0;
         var sortedUnits = units
             .Where(u => u.EnergyType == "Gas" || u.EnergyType == "Oil") // doar boilere
             .OrderBy(u => u.CO2Emissions) // 🔥 AICI schimbăm criteriul de sortare!
@@ -268,13 +300,14 @@ public class Optimizer : ViewModelBase
 
         Debug.WriteLine($"Found {sortedUnits.Count} production units (sorted by CO2 emissions).");
 
-        var results = new List<(DateTime TimeFrom, double GB1, double GB2, double OB1, double HeatDemand)>();
+        var results = new List<(DateTime TimeFrom, double GB1, double GB2, double OB1, double HeatDemand, double hourlyCO2)>();
 
         foreach (var demand in demandEntries.Where(d => d.Timestamp >= startDate && d.Timestamp < endDate))
         {
             double heatNeeded = demand.Value;
             double gb1 = 0, gb2 = 0, ob1 = 0;
-
+            double hourlyCO2 = 0;
+            double hourlyCost = 0;
             foreach (var unit in sortedUnits)
             {
                 if (heatNeeded <= 0)
@@ -288,11 +321,14 @@ public class Optimizer : ViewModelBase
                     gb2 += heatFromUnit;
                 else if (unit.Name.Contains("Oil Boiler 1"))
                     ob1 += heatFromUnit;
+                hourlyCO2 += heatFromUnit * unit.CO2Emissions;
+                hourlyCost += heatFromUnit * unit.ProductionCosts;
 
                 heatNeeded -= heatFromUnit;
             }
-
-            results.Add((demand.Timestamp, gb1, gb2, ob1, demand.Value));
+            totalCO2 += hourlyCO2;
+            totalCost += hourlyCost;
+            results.Add((demand.Timestamp, gb1, gb2, ob1, demand.Value, totalCO2));
         }
 
         var directory = Path.GetDirectoryName(outputCsvPath);
@@ -303,14 +339,17 @@ public class Optimizer : ViewModelBase
 
         using (var writer = new StreamWriter(outputCsvPath))
         {
-            writer.WriteLine("TimeFrom,GB1,GB2,OB1,HeatDemand");
+            writer.WriteLine("TimeFrom,GB1,GB2,OB1,HeatDemand,CO2");
             foreach (var result in results)
             {
-                writer.WriteLine($"{result.TimeFrom:yyyy-MM-dd HH:mm},{result.GB1:F2},{result.GB2:F2},{result.OB1:F2},{result.HeatDemand:F2}");
+                writer.WriteLine($"{result.TimeFrom:yyyy-MM-dd HH:mm},{result.GB1:F2},{result.GB2:F2},{result.OB1:F2},{result.HeatDemand:F2},{result.hourlyCO2:F2}");
             }
         }
 
         Console.WriteLine($"✅ Emissions optimization results saved to {outputCsvPath}");
+        TotalCO2 = totalCO2;
+        TotalCost = totalCost;
+
     }
 
 
@@ -323,6 +362,8 @@ public class Optimizer : ViewModelBase
         var ob1 = new List<double>();
         var heatDemand = new List<double>();
         var timestamps = new List<string>();
+        var co2Values = new List<double>();
+
 
         if (!File.Exists(filePath))
         {
@@ -342,6 +383,8 @@ public class Optimizer : ViewModelBase
                 gb2.Add(double.Parse(parts[2], CultureInfo.InvariantCulture));
                 ob1.Add(double.Parse(parts[3], CultureInfo.InvariantCulture));
                 heatDemand.Add(double.Parse(parts[4], CultureInfo.InvariantCulture));
+
+
             }
         }
 
@@ -351,24 +394,35 @@ public class Optimizer : ViewModelBase
         {
             Name = "GB1",
             Values = gb1,
+
+
         },
         new StackedAreaSeries<double>
         {
             Name = "GB2",
             Values = gb2,
+
         },
         new StackedAreaSeries<double>
         {
             Name = "OB1",
             Values = ob1,
+
         },
         new LineSeries<double>
         {
             Name = "Heat Demand",
-            Values = heatDemand,
-            Stroke = new SolidColorPaint(SKColors.Black, 2),
-            Fill = null
-        }
+        Values = heatDemand,
+        Stroke = new SolidColorPaint(SKColors.DeepSkyBlue, 2),
+        Fill = null,
+        GeometryFill = new SolidColorPaint(SKColors.White),
+        GeometryStroke = new SolidColorPaint(SKColors.DeepSkyBlue, 2),
+        GeometrySize = 10
+
+
+
+}
+
         };
 
         XAxes = new[]
