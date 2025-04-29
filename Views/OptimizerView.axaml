@@ -64,6 +64,7 @@
 </ComboBox>
 
             <CheckBox Content="Scenario 1" IsChecked="{Binding Scenario1Enabled}" />
+            <CheckBox Content="Scenario 2" IsChecked="{Binding Scenario2Enabled}" />
 
             <Button Content="Optimize" Command="{Binding OptimizeCommand}" Background="#b6a3d9"/>
             <Button Content="Save Results"  Background="#b6a3d9"/>
