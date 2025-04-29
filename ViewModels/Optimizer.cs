@@ -431,7 +431,10 @@ public class Optimizer : ViewModelBase
         {
             Labels = timestamps,
             LabelsRotation = 45,
-            TextSize = 10
+            TextSize = 10,
+         LabelsPaint = new SolidColorPaint(SKColors.White),
+        TicksPaint = new SolidColorPaint(SKColors.Gray),
+        NamePaint = new SolidColorPaint(SKColors.White)
         }
     };
 
@@ -440,7 +443,10 @@ public class Optimizer : ViewModelBase
         new Axis
         {
             Name = "MW",
-            TextSize = 10
+            TextSize = 10,
+            LabelsPaint = new SolidColorPaint(SKColors.White),
+        TicksPaint = new SolidColorPaint(SKColors.Gray),
+        NamePaint = new SolidColorPaint(SKColors.White)
         }
     };
 

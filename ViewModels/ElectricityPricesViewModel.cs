@@ -73,7 +73,10 @@ public class ElectricityPricesViewModel : SeasonalViewModelBase
             Labeler = value => DateTime.FromOADate(value).ToString("HH:mm"),
             LabelsRotation = 45,
             UnitWidth = TimeSpan.FromHours(1).TotalDays,
-            MinStep = TimeSpan.FromHours(1).TotalDays
+            MinStep = TimeSpan.FromHours(1).TotalDays,
+              LabelsPaint = new SolidColorPaint(SKColors.White),
+        TicksPaint = new SolidColorPaint(SKColors.Gray),
+        NamePaint = new SolidColorPaint(SKColors.White)
         }
     };
 
@@ -82,6 +85,9 @@ public class ElectricityPricesViewModel : SeasonalViewModelBase
         new Axis
         {
             Name = "Electricity Price (DKK/MWh)",
+              LabelsPaint = new SolidColorPaint(SKColors.White),
+        TicksPaint = new SolidColorPaint(SKColors.Gray),
+        NamePaint = new SolidColorPaint(SKColors.White)
         }
     };
 
