@@ -35,21 +35,23 @@
         <StackPanel Grid.Column="1" Spacing="10">
          <TextBlock Text="Start Date:" FontWeight="Bold"/>
 <StackPanel Orientation="Horizontal" Spacing="10">
-        <ComboBox ItemsSource="{Binding Hours}" SelectedItem="{Binding StartHour}" Width="60"/>
             <TextBlock Text="Hour" VerticalAlignment="Center"/>
-        <ComboBox ItemsSource="{Binding Months}" SelectedItem="{Binding StartMonth}" Width="90"/>
-           <TextBlock Text="Day:" VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding Hours}" SelectedItem="{Binding StartHour}" Width="60"/>
+  <TextBlock Text="Day:" VerticalAlignment="Center"/>
                     <ComboBox ItemsSource="{Binding Days}" SelectedItem="{Binding StartDay}" Width="60"/>
+        <ComboBox ItemsSource="{Binding Months}" SelectedItem="{Binding StartMonth}" Width="90"/>
     <TextBlock Text="2024" VerticalAlignment="Center"/>
 </StackPanel>
 
 <TextBlock Text="End Date:" FontWeight="Bold" Margin="0,10,0,0"/>
 <StackPanel Orientation="Horizontal" Spacing="10">
-    <ComboBox ItemsSource="{Binding Hours}" SelectedItem="{Binding EndHour}" Width="60"/>
+
     <TextBlock Text="Hour" VerticalAlignment="Center"/>
-    <ComboBox ItemsSource="{Binding Months}" SelectedItem="{Binding EndMonth}" Width="90"/>
-                       <TextBlock Text="Day:" VerticalAlignment="Center"/>
+        <ComboBox ItemsSource="{Binding Hours}" SelectedItem="{Binding EndHour}" Width="60"/>
+            <TextBlock Text="Day:" VerticalAlignment="Center"/>
     <ComboBox ItemsSource="{Binding Days}" SelectedItem="{Binding EndDay}" Width="60"/>
+    <ComboBox ItemsSource="{Binding Months}" SelectedItem="{Binding EndMonth}" Width="90"/>
+
     <TextBlock Text="2024" VerticalAlignment="Center"/>
 </StackPanel>
 
@@ -63,7 +65,7 @@
 
             <CheckBox Content="Scenario 1" IsChecked="{Binding Scenario1Enabled}" />
 
-            <Button Content="Optimize" Command="{Binding OptimizeCommand}" />
+            <Button Content="Optimize" Command="{Binding OptimizeCommand}" Background="#b6a3d9"/>
         </StackPanel>
     </Grid>
 </UserControl>
