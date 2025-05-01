@@ -6,14 +6,103 @@
 
                 x:Class="HeatHavnAppProject.Views.HomePageView" >
 
-             
- <StackPanel Margin="20" >
-      
-            <TextBlock Text="🏠 Home Page" FontSize="24" FontWeight="Bold" Margin="0,0,0,10"/>
-             <TextBlock Text="HeatHavn" Margin="0 20 0 0" HorizontalAlignment="Center" FontSize="20" VerticalAlignment="Center"/>
-    <Image Source="avares://HeatHavnAppProject/Assets/townmap.png" Width="550" Height="550" Margin="0 -50 0 0"/>
-          </StackPanel>
+   <Grid>
+    <!-- ScrollViewer cu scroll automat pe verticală și orizontală -->
+    <ScrollViewer
+      VerticalScrollBarVisibility="Auto"
+      HorizontalScrollBarVisibility="Disabled">
+      <StackPanel Margin="20">
+        <TextBlock Text="🏠 Home Page"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Margin="0,0,0,10"/>
+        <TextBlock Text="HeatHavn"
+                   Margin="0,20,0,0"
+                   HorizontalAlignment="Center"
+                   FontSize="24"
+                  FontWeight="Bold"
+/>
+        <Image Source="avares://HeatHavnAppProject/Assets/townmap.png"
+               Width="550" Height="550"
+               Margin="0,-50,0,0"/>
+              
+               <TextBlock Text="Case"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Margin="0,12,0,10"
+                    HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
 
-          
+        <TextBlock Margin="0,20,0,0"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="20"
+                   TextWrapping="Wrap">
+          HeatItOn is the utility in the city of Heatington which has to secure the heat delivery
+          to approx. 1600 buildings through a single district heating network. They produce
+          heat with a number of traditional heat-only boilers as well as units that combine the
+          production of heat with the production / consumption of electricity (CHPs). They are
+          planning the heat schedules manually but now they want to cost optimize their
+          production. The goal of the project is to define heat schedules for all available
+          production units with the lowest possible expenses and the highest profit on the
+          electricity market.
+        </TextBlock>
 
-          </UserControl>  
+
+             <TextBlock Text="Team Members:"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Margin="0,35,0,10"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
+                   
+ <TextBlock Margin="0,8,0,0"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="20"
+                   TextWrapping="Wrap">
+Alexandra Corina Gubauceanu  
+        </TextBlock>
+         <TextBlock Margin="0,8,0,0"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="20"
+                   TextWrapping="Wrap">
+Miruna Maria Romanescu  
+        </TextBlock>
+ <TextBlock Margin="0,8,0,0"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="20"
+                   TextWrapping="Wrap">
+Mihai Adrian Briceag  
+        </TextBlock>
+
+ <TextBlock Margin="0,8,0,0"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="20"
+                   TextWrapping="Wrap">
+Claudiu Florin Barza  
+        </TextBlock>
+
+ <TextBlock Margin="0,8,0,0"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="20"
+                   TextWrapping="Wrap">
+Darius Andrei Schiopu  
+        </TextBlock>
+
+         <TextBlock Margin="0,8,0,45"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="20"
+                   TextWrapping="Wrap">
+Mihnea Stefan Tudor 
+        </TextBlock>
+
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</UserControl>

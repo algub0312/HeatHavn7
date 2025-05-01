@@ -9,5 +9,6 @@ namespace HeatHavnAppProject.Views
         {
      InitializeComponent();
         }
+        
     }
 }

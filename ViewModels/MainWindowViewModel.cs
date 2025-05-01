@@ -29,13 +29,14 @@ public class MainWindowViewModel : ViewModelBase
             sourceManager.LoadWinterDataEl("Data/winterperiod.csv");
 
             var assetManagerVM = new AssetManagerViewModel();
+            var assetManager = new AssetManager();
 
             Tabs = new ObservableCollection<object>
         {   new HomePageViewModel(),
             new ProductionUnitsViewModel(assetManagerVM),
             new HeatDemandViewModel(sourceManager),
             new ElectricityPricesViewModel(sourceManager),
-            new Optimizer(),
+            new Optimizer(sourceManager, assetManager),
             new ViewModelBase()
         };
 

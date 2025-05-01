@@ -76,7 +76,10 @@ public class HeatDemandViewModel : SeasonalViewModelBase
             Labeler = value => DateTime.FromOADate(value).ToString("HH:mm"),
             LabelsRotation = 45,
             UnitWidth = TimeSpan.FromHours(1).TotalDays,
-            MinStep = TimeSpan.FromHours(1).TotalDays
+            MinStep = TimeSpan.FromHours(1).TotalDays,
+              LabelsPaint = new SolidColorPaint(SKColors.White),
+        TicksPaint = new SolidColorPaint(SKColors.Gray),
+        NamePaint = new SolidColorPaint(SKColors.White)
         }
     };
 
@@ -84,7 +87,10 @@ public class HeatDemandViewModel : SeasonalViewModelBase
     {
         new Axis
         {
-            Name = "Heat Demand (MWh)"
+            Name = "Heat Demand (MWh)",
+              LabelsPaint = new SolidColorPaint(SKColors.White),
+        TicksPaint = new SolidColorPaint(SKColors.Gray),
+        NamePaint = new SolidColorPaint(SKColors.White)
         }
     };
 
