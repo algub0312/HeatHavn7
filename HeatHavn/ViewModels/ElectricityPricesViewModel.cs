@@ -14,7 +14,7 @@ using SkiaSharp;
 
 public class ElectricityPricesViewModel : SeasonalViewModelBase
 {
-    public override string Title => "⚡Electricity Prices";
+    public override string Title => "⚡ Electricity Prices";
 
 
     public ObservableCollection<TimeSeriesEntry> FilteredElectricityPrices { get; } = new();

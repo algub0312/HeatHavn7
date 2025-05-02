@@ -5,6 +5,7 @@
         x:Class="HeatHavnAppProject.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="HeatHavnAppProject"
+        Icon="/Assets/avalonia-logo.ico"
         Width="1000" Height="700">
 
   <Grid>
@@ -13,16 +14,33 @@
         <ColumnDefinition Width="*"/>
     </Grid.ColumnDefinitions>
 
-    <!-- Sidebar with Tab Titles, DE AICI SCHIMBATI FUNDALUL DE LA TAB BAR-->
-    <ListBox Grid.Column="0"
+
+    <SplitView Grid.Column="0"
+               IsPaneOpen="{Binding IsPaneOpen}"
+               OpenPaneLength="200"
+               CompactPaneLength="60"
+               DisplayMode="CompactInline"
+                Background="Black"
+                PaneBackground="#1e1e1e"
+    >
+    <SplitView.Pane>
+        <StackPanel>
+            <Button Command="{Binding TogglePaneCommand}"
+                    Height="45"
+                    Width="60"
+                    FontSize="25"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center">
+                ☰
+            </Button>    
+         <!-- Sidebar with Tab Titles, DE AICI SCHIMBATI FUNDALUL DE LA TAB BAR-->
+    <ListBox 
              ItemsSource="{Binding Tabs}" 
-             SelectedItem="{Binding CurrentView}"  
-             Background="Black" 
-             BorderThickness="0">
+             SelectedItem="{Binding CurrentView}">
         <ListBox.ItemTemplate>
             <DataTemplate x:DataType="vm:ViewModelBase">
                 <!-- DE AICI SCHIMBATI CUM ARATA TABURILE GEN IDK CA BUTON INTELEGETI VOI-->
-                <Border CornerRadius="8" Background="#b6a3d9" Margin="5">
+                <Border CornerRadius="8" Background="DarkSlateGray" Margin="2">
                 <TextBlock Text="{Binding Title}" 
                            Padding="10"
                            Foreground="White"
@@ -31,6 +49,9 @@
             </DataTemplate>
         </ListBox.ItemTemplate>
     </ListBox>
+    </StackPanel>
+    </SplitView.Pane>
+    </SplitView>
 
     <!-- Single Content View BACKGROUNDUL GENERAL AL TABURILOR-->
     <ContentControl Grid.Column="1"

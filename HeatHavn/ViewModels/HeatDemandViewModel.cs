@@ -17,7 +17,7 @@ namespace HeatHavnAppProject.ViewModels;
 
 public class HeatDemandViewModel : SeasonalViewModelBase
 {
-    public override string Title => "🔥Heat Demand";
+    public override string Title => "🔥 Heat Demand";
 
     public ObservableCollection<TimeSeriesEntry> FilteredHeatDemand { get; } = new();
     public ObservableCollection<ObservablePoint> HeatDemandPoints { get; } = new();
