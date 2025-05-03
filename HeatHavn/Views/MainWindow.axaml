@@ -20,8 +20,8 @@
                OpenPaneLength="200"
                CompactPaneLength="60"
                DisplayMode="CompactInline"
-                Background="Black"
-                PaneBackground="#1e1e1e"
+ Background="#EEEEEE"
+ PaneBackground="#EEEEEE"
     >
     <SplitView.Pane>
         <StackPanel>
@@ -29,21 +29,24 @@
                     Height="45"
                     Width="60"
                     FontSize="25"
+                        Background="#969696"
+
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center">
                 ☰
             </Button>    
          <!-- Sidebar with Tab Titles, DE AICI SCHIMBATI FUNDALUL DE LA TAB BAR-->
     <ListBox 
+    Background="#969696"
              ItemsSource="{Binding Tabs}" 
              SelectedItem="{Binding CurrentView}">
         <ListBox.ItemTemplate>
             <DataTemplate x:DataType="vm:ViewModelBase">
                 <!-- DE AICI SCHIMBATI CUM ARATA TABURILE GEN IDK CA BUTON INTELEGETI VOI-->
-                <Border CornerRadius="8" Background="DarkSlateGray" Margin="2">
+                <Border CornerRadius="8" Background="#EEEEEE" Margin="2">
                 <TextBlock Text="{Binding Title}" 
                            Padding="10"
-                           Foreground="White"
+                           Foreground="Black"
                            FontWeight="Bold"/>
                 </Border>
             </DataTemplate>
@@ -56,7 +59,7 @@
     <!-- Single Content View BACKGROUNDUL GENERAL AL TABURILOR-->
     <ContentControl Grid.Column="1"
                     Content="{Binding CurrentView}"
-                    Background="Black">
+                    Background="#EEEEEE">
         <ContentControl.DataTemplates>
 <!-- DE AICI SE MODIFICA BACKGROUNDUL LA UN TAB SPECIFIC-->
 <DataTemplate x:DataType="vm:HomePageViewModel" >

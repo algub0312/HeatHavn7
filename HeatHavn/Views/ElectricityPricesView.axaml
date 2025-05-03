@@ -22,7 +22,7 @@
             <TextBlock Text="⚡Electricity Prices" 
                        FontSize="28" 
                        FontWeight="Bold" 
-                       Foreground="#4A90E2" 
+                       Foreground="#7B3B85" 
                        Margin="0,0,0,20" />
             <Border BorderBrush="#D1D1D1" 
                     BorderThickness="2" 
@@ -33,7 +33,7 @@
                     Series="{Binding ElSeries}" 
                     XAxes="{Binding XAxes}" 
                     YAxes="{Binding YAxes}"
-                    Height="200" />
+                    Height="420" />
             </Border>
         </StackPanel>
 
@@ -44,7 +44,7 @@
                        FontSize="16" 
                        FontWeight="Bold" 
                        Foreground="#333333" 
-                       Margin="0,0,0,10" />
+                       Margin="0,22,0,10" />
             <ComboBox ItemsSource="{Binding Seasons}" 
                       SelectedItem="{Binding SelectedSeason}" 
                       Width="200" 

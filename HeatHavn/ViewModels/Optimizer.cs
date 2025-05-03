@@ -658,9 +658,9 @@ Console.WriteLine("✅ Scenario 2 (emissions) optimization complete.");
             Labels = timestamps,
             LabelsRotation = 45,
             TextSize = 10,
-         LabelsPaint = new SolidColorPaint(SKColors.White),
-        TicksPaint = new SolidColorPaint(SKColors.Gray),
-        NamePaint = new SolidColorPaint(SKColors.White)
+         LabelsPaint = new SolidColorPaint(SKColors.Black),
+        TicksPaint = new SolidColorPaint(SKColors.Black),
+        NamePaint = new SolidColorPaint(SKColors.Black)
         }
     };
 
@@ -670,9 +670,9 @@ Console.WriteLine("✅ Scenario 2 (emissions) optimization complete.");
         {
             Name = "MW",
             TextSize = 10,
-            LabelsPaint = new SolidColorPaint(SKColors.White),
-        TicksPaint = new SolidColorPaint(SKColors.Gray),
-        NamePaint = new SolidColorPaint(SKColors.White)
+            LabelsPaint = new SolidColorPaint(SKColors.Black),
+        TicksPaint = new SolidColorPaint(SKColors.Black),
+        NamePaint = new SolidColorPaint(SKColors.Black)
         }
     };
 
