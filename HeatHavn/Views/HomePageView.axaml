@@ -1,46 +1,43 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:HeatHavnAppProject.ViewModels"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="HeatHavnAppProject.Views.HomePageView">
+  <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <!-- 1) Two-column Grid -->
+    <Grid Margin="20">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />    <!-- Left: map & title -->
+        <ColumnDefinition Width="*" />    <!-- Right: case & team -->
+      </Grid.ColumnDefinitions>
 
-                x:Class="HeatHavnAppProject.Views.HomePageView" >
-
-   <Grid>
-    <!-- ScrollViewer cu scroll automat pe verticală și orizontală -->
-    <ScrollViewer
-      VerticalScrollBarVisibility="Auto"
-      HorizontalScrollBarVisibility="Disabled">
-      <StackPanel Margin="20">
+      <!-- LEFT SIDE -->
+      <StackPanel Grid.Column="0" Spacing="10" >
         <TextBlock Text="🏠 Home Page"
-                   FontSize="24"
-                   FontWeight="Bold"
-                   Margin="0,0,0,10"/>
+                   FontSize="28"
+                   Foreground="#7B3B85"
+                   FontWeight="Bold"/>
         <TextBlock Text="HeatHavn"
-                   Margin="0,20,0,0"
-                   HorizontalAlignment="Center"
                    FontSize="24"
-                  FontWeight="Bold"
-/>
-        <Image Source="avares://HeatHavnAppProject/Assets/townmap.png"
-               Width="550" Height="550"
-               Margin="0,-50,0,0"/>
-              
-               <TextBlock Text="Case"
-                   FontSize="24"
+                    Foreground="Black"
                    FontWeight="Bold"
-                   Margin="0,12,0,10"
-                    HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
+                   Margin="0,50,0,0"/>
+        <Image Source="avares://HeatHavnAppProject/Assets/townmap.png"
+               Stretch="Uniform"
+               MaxWidth="550"
+               MaxHeight="550"/>
+      </StackPanel>
 
-        <TextBlock Margin="0,20,0,0"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   FontSize="20"
-                   TextWrapping="Wrap">
+      <!-- RIGHT SIDE -->
+      <StackPanel Grid.Column="1" Spacing="10" Margin="20,50,5,0">
+        <TextBlock Text="Case"
+                   FontSize="24"
+                         Foreground="Black"
+                   FontWeight="Bold"/>
+        <TextBlock TextWrapping="Wrap"
+                   FontSize="18"
+                         Foreground="Black">
           HeatItOn is the utility in the city of Heatington which has to secure the heat delivery
-          to approx. 1600 buildings through a single district heating network. They produce
-          heat with a number of traditional heat-only boilers as well as units that combine the
+          to approx. 1600 buildings through a single district heating network. They produce heat
+          with a number of traditional heat-only boilers as well as units that combine the
           production of heat with the production / consumption of electricity (CHPs). They are
           planning the heat schedules manually but now they want to cost optimize their
           production. The goal of the project is to define heat schedules for all available
@@ -48,61 +45,30 @@
           electricity market.
         </TextBlock>
 
-
-             <TextBlock Text="Team Members:"
+        <TextBlock Text="Team Members:"
                    FontSize="24"
                    FontWeight="Bold"
-                   Margin="0,35,0,10"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
-                   
- <TextBlock Margin="0,8,0,0"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   FontSize="20"
-                   TextWrapping="Wrap">
-Alexandra Corina Gubauceanu  
-        </TextBlock>
-         <TextBlock Margin="0,8,0,0"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   FontSize="20"
-                   TextWrapping="Wrap">
-Miruna Maria Romanescu  
-        </TextBlock>
- <TextBlock Margin="0,8,0,0"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   FontSize="20"
-                   TextWrapping="Wrap">
-Mihai Adrian Briceag  
-        </TextBlock>
-
- <TextBlock Margin="0,8,0,0"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   FontSize="20"
-                   TextWrapping="Wrap">
-Claudiu Florin Barza  
-        </TextBlock>
-
- <TextBlock Margin="0,8,0,0"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   FontSize="20"
-                   TextWrapping="Wrap">
-Darius Andrei Schiopu  
-        </TextBlock>
-
-         <TextBlock Margin="0,8,0,45"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   FontSize="20"
-                   TextWrapping="Wrap">
-Mihnea Stefan Tudor 
-        </TextBlock>
-
+                   Margin="0,20,0,5"
+                         Foreground="Black"/>
+        <!-- List each name (or bind to a collection!) -->
+        <ItemsControl>
+          <ItemsControl.Items>
+            <x:String>Alexandra Corina Gubauceanu</x:String>
+            <x:String>Miruna Maria Romanescu</x:String>
+            <x:String>Mihai Adrian Briceag</x:String>
+            <x:String>Claudiu Florin Barza</x:String>
+            <x:String>Darius Andrei Schiopu</x:String>
+            <x:String>Mihnea Stefan Tudor</x:String>
+          </ItemsControl.Items>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding}"
+                         FontSize="20"
+                          Foreground="Black"/>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
       </StackPanel>
-    </ScrollViewer>
-  </Grid>
+    </Grid>
+  </ScrollViewer>
 </UserControl>

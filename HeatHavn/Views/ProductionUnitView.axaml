@@ -12,7 +12,7 @@
             <TextBlock Text="📁 Production Units" 
                        FontSize="28" 
                        FontWeight="Bold" 
-                       Foreground="Black" 
+                       Foreground="#7B3B85"  
                        Margin="0,0,0,20"/>
 
             <!-- ItemsControl for Production Units -->
