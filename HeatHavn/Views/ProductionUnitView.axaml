@@ -6,21 +6,72 @@
              x:DataType="vm:ProductionUnitsViewModel">
 
              
-    
-    <ScrollViewer>
+     <ScrollViewer>
         <StackPanel Margin="20">
-            <TextBlock Text="📁 Production Units" FontSize="24" FontWeight="Bold" Margin="0,0,0,10"/>
+            <!-- Title -->
+            <TextBlock Text="📁 Production Units" 
+                       FontSize="28" 
+                       FontWeight="Bold" 
+                       Foreground="Black" 
+                       Margin="0,0,0,20"/>
+
+            <!-- ItemsControl for Production Units -->
             <ItemsControl ItemsSource="{Binding Units}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel ItemWidth="250" ItemHeight="200" HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="models:ProductionUnit">
-                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="8" Padding="10" Margin="0,0,0,10">
+                        <Border BorderBrush="Gray" 
+                                BorderThickness="2" 
+                                CornerRadius="12" 
+                                Padding="15" 
+                                Margin="10" 
+                                Background="#F9F9F9"
+                               >
                             <StackPanel>
-                                <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
-                                <TextBlock><Run Text="Max Heat: "/><Run Text="{Binding MaxHeat}"/><Run Text=" MW"/></TextBlock>
-                                <TextBlock><Run Text="Max Electricity: "/><Run Text="{Binding MaxElectricity}"/><Run Text=" MW"/></TextBlock>
-                                <TextBlock><Run Text="Cost: "/><Run Text="{Binding ProductionCosts}"/><Run Text=" DKK/MWh(th)"/></TextBlock>
-                                <TextBlock><Run Text="CO₂: "/><Run Text="{Binding CO2Emissions}"/><Run Text=" kg/MWh(th)"/></TextBlock>
-                                <TextBlock><Run Text="Energy Type: "/><Run Text="{Binding EnergyType}"/></TextBlock>
+                                <!-- Unit Name -->
+                                <TextBlock Text="{Binding Name}" 
+                                           FontWeight="Bold" 
+                                           FontSize="18" 
+                                           Foreground="#333333" 
+                                           Margin="0,0,0,10"/>
+
+                                <!-- Max Heat -->
+                                <TextBlock Foreground="#666666">
+                                    <Run Text="🔥 Max Heat: "/>
+                                    <Run Text="{Binding MaxHeat}"/>
+                                    <Run Text=" MW"/>
+                                </TextBlock>
+
+                                <!-- Max Electricity -->
+                                <TextBlock Foreground="#666666">
+                                    <Run Text="⚡ Max Electricity: "/>
+                                    <Run Text="{Binding MaxElectricity}"/>
+                                    <Run Text=" MW"/>
+                                </TextBlock>
+
+                                <!-- Production Costs -->
+                                <TextBlock Foreground="#666666">
+                                    <Run Text="💰 Cost: "/>
+                                    <Run Text="{Binding ProductionCosts}"/>
+                                    <Run Text=" DKK/MWh(th)"/>
+                                </TextBlock>
+
+                                <!-- CO2 Emissions -->
+                                <TextBlock Foreground="#666666">
+                                    <Run Text="🌍 CO₂: "/>
+                                    <Run Text="{Binding CO2Emissions}"/>
+                                    <Run Text=" kg/MWh(th)"/>
+                                </TextBlock>
+
+                                <!-- Energy Type -->
+                                <TextBlock Foreground="#666666">
+                                    <Run Text="🔋 Energy Type: "/>
+                                    <Run Text="{Binding EnergyType}"/>
+                                </TextBlock>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

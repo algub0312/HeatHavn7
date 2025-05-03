@@ -9,30 +9,79 @@
              x:DataType="vm:ElectricityPricesViewModel"
             mc:Ignorable="d">
 
+<Grid Margin="20">
+        <!-- Define two columns: one for the chart and one for the other components -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" /> <!-- Chart column -->
+            <ColumnDefinition Width="1*" /> <!-- Components column -->
+        </Grid.ColumnDefinitions>
 
-    <StackPanel Margin="20">
-        <TextBlock Text="⚡ Electricity Prices" FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
-<lvc:CartesianChart 
-    Series="{Binding ElSeries}" 
-    XAxes="{Binding XAxes}" 
-    YAxes="{Binding YAxes}"
-    Height="200"
-    Margin="0,0,0,20"/>
-        <ComboBox ItemsSource="{Binding Seasons}" SelectedItem="{Binding SelectedSeason}" Width="120" Margin="0,0,0,10" HorizontalAlignment="Center"/>
-<ScrollViewer MaxHeight="400" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Center">
-        <ItemsControl ItemsSource="{Binding FilteredElectricityPrices}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                   
-                    <StackPanel Orientation="Horizontal" Margin="0,5">
-                        <TextBlock Text="{Binding Timestamp}" Width="200"/>
-                        <TextBlock Text="{Binding Value}" Width="100"/>
-                    </StackPanel>
-                    
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        </ScrollViewer>
-    </StackPanel>
 
+    <!-- Chart Section -->
+        <StackPanel Grid.Column="0" Margin="10">
+            <TextBlock Text="⚡Electricity Prices" 
+                       FontSize="28" 
+                       FontWeight="Bold" 
+                       Foreground="#4A90E2" 
+                       Margin="0,0,0,20" />
+            <Border BorderBrush="#D1D1D1" 
+                    BorderThickness="2" 
+                    CornerRadius="12" 
+                    Padding="10" 
+                    Background="#F9F9F9">
+                <lvc:CartesianChart 
+                    Series="{Binding ElSeries}" 
+                    XAxes="{Binding XAxes}" 
+                    YAxes="{Binding YAxes}"
+                    Height="200" />
+            </Border>
+        </StackPanel>
+
+        <!-- Components Section -->
+        <StackPanel Grid.Column="1" Margin="10">
+            <!-- Season Selector -->
+            <TextBlock Text="Select Season:" 
+                       FontSize="16" 
+                       FontWeight="Bold" 
+                       Foreground="#333333" 
+                       Margin="0,0,0,10" />
+            <ComboBox ItemsSource="{Binding Seasons}" 
+                      SelectedItem="{Binding SelectedSeason}" 
+                      Width="200" 
+                      HorizontalAlignment="Left" 
+                      Margin="0,0,0,20" />
+
+            <!-- Filtered Electricity Prices List -->
+            <TextBlock Text="Filtered Electricity Prices:" 
+                       FontSize="16" 
+                       FontWeight="Bold" 
+                       Foreground="#333333" 
+                       Margin="0,0,0,10" />
+            <ScrollViewer MaxHeight="400" 
+                          HorizontalScrollBarVisibility="Auto" 
+                          VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding FilteredElectricityPrices}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="#D1D1D1" 
+                                    BorderThickness="1" 
+                                    CornerRadius="8" 
+                                    Padding="5" 
+                                    Margin="0,5" 
+                                    Background="#F9F9F9">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Timestamp}" 
+                                               Width="150" 
+                                               Foreground="#333333" />
+                                    <TextBlock Text="{Binding Value}" 
+                                               Width="100" 
+                                               Foreground="#666666" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </StackPanel>
+    </Grid>
 </UserControl>
