@@ -83,12 +83,86 @@
             </DataTemplate>
 
 
-            <DataTemplate x:DataType="vm:ViewModelBase">
-                <TextBlock Text="🚧 Not implemented yet"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Center"
-                           FontSize="24"/>
-            </DataTemplate>
+      <DataTemplate x:DataType="vm:ViewModelBase">
+ <ScrollViewer 
+    Padding="24"
+    VerticalScrollBarVisibility="Auto"
+    HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Spacing="16">
+      <!-- Header -->
+      <TextBlock Text="🆘 Help &amp; Usage Guide"
+                 FontSize="28"
+                 FontWeight="Bold"
+                 Foreground="Black"
+                 HorizontalAlignment="Center"/>
+
+      <!-- 1) Home Page -->
+      <TextBlock Text="🏠 Home Page"
+                 FontSize="20"
+                 FontWeight="SemiBold"
+                 Foreground="Black"/>
+      <TextBlock Text="On the Home Page you’ll find an overview map of the HeatHavn network and a description of the project case and team members."
+                 TextWrapping="Wrap"
+                 Foreground="Black"/>
+
+      <!-- 2) Production Units -->
+      <TextBlock Text="📦 Production Units"
+                 FontSize="20"
+                 FontWeight="SemiBold"
+                 Foreground="Black"/>
+      <TextBlock Text="Use this page to review all available heat-production units (boilers, motors, heat pumps) and their capacities, costs, and emissions. These units feed into the optimizer."
+                 TextWrapping="Wrap"
+                 Foreground="Black"/>
+
+      <!-- 3) Heat Demand & Electricity Prices -->
+      <TextBlock Text="🔥 Heat Demand / ⚡ Electricity Prices"
+                 FontSize="20"
+                 FontWeight="SemiBold"
+                 Foreground="Black"/>
+      <TextBlock Text="These pages show time-series charts of the input data used by the optimizer. Select season (March or August) to filter the hourly values."
+                 TextWrapping="Wrap"
+                 Foreground="Black"/>
+
+      <!-- 4) Optimizer -->
+      <TextBlock Text="📈 Optimizer"
+                 FontSize="20"
+                 FontWeight="SemiBold"
+                 Foreground="Black"/>
+      <TextBlock Text="How to run an optimization:"
+                 FontSize="16"
+                 FontWeight="Bold"
+                 Margin="0,4,0,0"
+                 Foreground="Black"/>
+      <TextBlock Text="• Choose your start and end dates: March 1–14 or August 11–24."
+                 TextWrapping="Wrap"
+                 Margin="12,0,0,2"
+                 Foreground="Black"/>
+      <TextBlock Text="• Select optimization type: Cost or Emissions."
+                 TextWrapping="Wrap"
+                 Margin="12,0,0,2"
+                 Foreground="Black"/>
+      <TextBlock Text="• Pick Scenario 1 (only boilers) or Scenario 2 (all units)."
+                 TextWrapping="Wrap"
+                 Margin="12,0,0,2"
+                 Foreground="Black"/>
+      <TextBlock Text="• Click 🚀 Optimize to generate the stacked‐area chart below. You can scroll horizontally to explore all hours."
+                 TextWrapping="Wrap"
+                 Margin="12,0,0,2"
+                 Foreground="Black"/>
+
+      <!-- 5) Saving Results -->
+      <TextBlock Text="💾 Saving Your Results"
+                 FontSize="20"
+                 FontWeight="SemiBold"
+                 Foreground="Black"/>
+      <TextBlock Text="After optimization, press Save Results to pick a file location on your PC and export the CSV of hourly dispatch, costs, and emissions."
+                 TextWrapping="Wrap"
+                 Foreground="Black"/>
+    </StackPanel>
+  </ScrollViewer>
+</DataTemplate>
+
+
         </ContentControl.DataTemplates>
     </ContentControl>
 </Grid>
