@@ -90,7 +90,12 @@ public bool Scenario2Enabled
             UpdateStartDate();
         }
     }
-
+private string _saveStatus = "";
+public string SaveStatus
+{
+    get => _saveStatus;
+    set => this.RaiseAndSetIfChanged(ref _saveStatus, value);
+}
     private DateTimeOffset? _startDate = DateTimeOffset.Now;
     public DateTimeOffset? StartDate
     {
@@ -258,6 +263,21 @@ SaveCsvCommand = new RelayCommand(() =>
         using var src  = File.OpenRead(_lastOutputPath);
         src.CopyTo(dest);
         Console.WriteLine($"✅ Results saved to {result.Name}");
+    }
+
+      if (result != null)
+    {
+        using var dest = result.OpenWriteAsync().GetAwaiter().GetResult();
+        using var src  = File.OpenRead(_lastOutputPath);
+        src.CopyTo(dest);
+
+        // ←— set your status here
+        SaveStatus = $"✅ Saved to “{result.Name}”";
+        Observable
+                .Timer(TimeSpan.FromSeconds(2))
+                // make sure we’re back on the UI thread
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => SaveStatus = "");
     }
 });
     }
