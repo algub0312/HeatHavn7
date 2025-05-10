@@ -5,78 +5,82 @@
              x:Class="HeatHavnAppProject.Views.ProductionUnitView"
              x:DataType="vm:ProductionUnitsViewModel">
 
-             
-     <ScrollViewer>
-        <StackPanel Margin="20">
-            <!-- Title -->
-            <TextBlock Text="📁 Production Units" 
-                       FontSize="28" 
-                       FontWeight="Bold" 
-                       Foreground="#7B3B85"  
-                       Margin="0,0,0,20"/>
+  <ScrollViewer>
+    <Grid Margin="20">
+      <!-- two columns: left=units, right=images -->
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
 
-            <!-- ItemsControl for Production Units -->
-            <ItemsControl ItemsSource="{Binding Units}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel ItemWidth="250" ItemHeight="200" HorizontalAlignment="Center"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="models:ProductionUnit">
-                        <Border BorderBrush="Gray" 
-                                BorderThickness="2" 
-                                CornerRadius="12" 
-                                Padding="15" 
-                                Margin="10" 
-                                Background="#F9F9F9"
-                               >
-                            <StackPanel>
-                                <!-- Unit Name -->
-                                <TextBlock Text="{Binding Name}" 
-                                           FontWeight="Bold" 
-                                           FontSize="18" 
-                                           Foreground="#333333" 
-                                           Margin="0,0,0,10"/>
+      <!-- LEFT: your Production Units list -->
+      <StackPanel Grid.Column="0" Spacing="16">
+        <TextBlock Text="📁 Production Units"
+                   FontSize="28"
+                   FontWeight="Bold"
+                   Foreground="#7B3B85" />
 
-                                <!-- Max Heat -->
-                                <TextBlock Foreground="#666666">
-                                    <Run Text="🔥 Max Heat: "/>
-                                    <Run Text="{Binding MaxHeat}"/>
-                                    <Run Text=" MW"/>
-                                </TextBlock>
+        <ItemsControl ItemsSource="{Binding Units}">
+          <!-- vertical StackPanel by default -->
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="models:ProductionUnit">
+              <Border BorderBrush="Gray"
+                      BorderThickness="2"
+                      CornerRadius="12"
+                      Padding="15"
+                      Margin="0,0,0,10"
+                      Background="#F9F9F9">
+                <StackPanel>
+                  <TextBlock Text="{Binding Name}"
+                             FontWeight="Bold"
+                             FontSize="18"
+                             Foreground="#333333"
+                             Margin="0,0,0,10" />
+                  <TextBlock Foreground="#666666">
+                    <Run Text="🔥 Max Heat: "/>
+                    <Run Text="{Binding MaxHeat}"/>
+                    <Run Text=" MW"/>
+                  </TextBlock>
+                  <TextBlock Foreground="#666666">
+                    <Run Text="⚡ Max Electricity: "/>
+                    <Run Text="{Binding MaxElectricity}"/>
+                    <Run Text=" MW"/>
+                  </TextBlock>
+                  <TextBlock Foreground="#666666">
+                    <Run Text="💰 Cost: "/>
+                    <Run Text="{Binding ProductionCosts}"/>
+                    <Run Text=" DKK/MWh(th)"/>
+                  </TextBlock>
+                  <TextBlock Foreground="#666666">
+                    <Run Text="🌍 CO₂: "/>
+                    <Run Text="{Binding CO2Emissions}"/>
+                    <Run Text=" kg/MWh(th)"/>
+                  </TextBlock>
+                  <TextBlock Foreground="#666666">
+                    <Run Text="🔋 Energy Type: "/>
+                    <Run Text="{Binding EnergyType}"/>
+                  </TextBlock>
+                </StackPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
 
-                                <!-- Max Electricity -->
-                                <TextBlock Foreground="#666666">
-                                    <Run Text="⚡ Max Electricity: "/>
-                                    <Run Text="{Binding MaxElectricity}"/>
-                                    <Run Text=" MW"/>
-                                </TextBlock>
+      <!-- RIGHT: five static images -->
+      <StackPanel Grid.Column="1" Spacing="5" HorizontalAlignment="Center"                       Margin="35,35,0,0" >
+        <Image Source="avares://HeatHavnAppProject/Assets/1.jpg"
+               Width="280" Height="180" Stretch="Uniform"/>
+        <Image Source="avares://HeatHavnAppProject/Assets/2.jpg"
+               Width="280" Height="180" Stretch="Uniform"/>
+        <Image Source="avares://HeatHavnAppProject/Assets/3.jpg"
+               Width="280" Height="180" Stretch="Uniform"/>
+        <Image Source="avares://HeatHavnAppProject/Assets/4.jpg"
+               Width="280" Height="140" Stretch="Uniform"/>
+        <Image Source="avares://HeatHavnAppProject/Assets/5.jpg"
+               Width="280" Height="140" Stretch="Uniform" Margin="0,23,0,0"/>
+      </StackPanel>
+    </Grid>
+  </ScrollViewer>
 
-                                <!-- Production Costs -->
-                                <TextBlock Foreground="#666666">
-                                    <Run Text="💰 Cost: "/>
-                                    <Run Text="{Binding ProductionCosts}"/>
-                                    <Run Text=" DKK/MWh(th)"/>
-                                </TextBlock>
-
-                                <!-- CO2 Emissions -->
-                                <TextBlock Foreground="#666666">
-                                    <Run Text="🌍 CO₂: "/>
-                                    <Run Text="{Binding CO2Emissions}"/>
-                                    <Run Text=" kg/MWh(th)"/>
-                                </TextBlock>
-
-                                <!-- Energy Type -->
-                                <TextBlock Foreground="#666666">
-                                    <Run Text="🔋 Energy Type: "/>
-                                    <Run Text="{Binding EnergyType}"/>
-                                </TextBlock>
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
-    </ScrollViewer>
 </UserControl>

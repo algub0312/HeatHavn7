@@ -19,7 +19,8 @@
                    FontSize="24"
                     Foreground="Black"
                    FontWeight="Bold"
-                   Margin="0,50,0,0"/>
+                   Margin="0,50,0,0"
+                       HorizontalAlignment="Center"/>
         <Image Source="avares://HeatHavnAppProject/Assets/townmap.png"
                Stretch="Uniform"
                MaxWidth="550"
@@ -27,7 +28,7 @@
       </StackPanel>
 
       <!-- RIGHT SIDE -->
-      <StackPanel Grid.Column="1" Spacing="10" Margin="20,50,5,0">
+      <StackPanel Grid.Column="1" Spacing="10" Margin="20,65,5,0">
         <TextBlock Text="Case"
                    FontSize="24"
                          Foreground="Black"
