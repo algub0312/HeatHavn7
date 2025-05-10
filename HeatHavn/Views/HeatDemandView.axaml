@@ -34,7 +34,9 @@
                     Series="{Binding HeatSeries}" 
                     XAxes="{Binding XAxes}" 
                     YAxes="{Binding YAxes}" 
-                    Height="420" />
+                      ZoomMode="X"
+                    Height="420" 
+                  />
             </Border>
         </StackPanel>
 
