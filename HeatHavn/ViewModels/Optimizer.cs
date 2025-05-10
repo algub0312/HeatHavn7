@@ -14,6 +14,9 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using System.Globalization;
+using static System.Net.Mime.MediaTypeNames;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform.Storage;
 
 namespace HeatHavnAppProject.ViewModels;
 
@@ -26,6 +29,8 @@ public class Optimizer : ViewModelBase
     public List<int> Hours { get; } = Enumerable.Range(0, 24).ToList();
     // Luni disponibile
     public List<string> Months { get; } = new() { "March", "August" };
+        private string _lastOutputPath = "Data/optimization_results.csv";
+    public ICommand SaveCsvCommand   { get; }
     private readonly SourceDataManagerViewModel _sourceDataManager;
     private readonly AssetManager _assetManager;
     public ISeries[] Series { get; set; }
@@ -85,7 +90,12 @@ public bool Scenario2Enabled
             UpdateStartDate();
         }
     }
-
+private string _saveStatus = "";
+public string SaveStatus
+{
+    get => _saveStatus;
+    set => this.RaiseAndSetIfChanged(ref _saveStatus, value);
+}
     private DateTimeOffset? _startDate = DateTimeOffset.Now;
     public DateTimeOffset? StartDate
     {
@@ -163,7 +173,8 @@ public bool Scenario2Enabled
     public ICommand OptimizeCommand { get; }
 
     public Optimizer(SourceDataManagerViewModel sourceDataManager, AssetManager assetManager)
-    {
+    {_lastOutputPath = "Data/optimization_results.csv"; // default output path
+
         _sourceDataManager = sourceDataManager;
         _assetManager = assetManager;
         OptimizeCommand = new RelayCommand(() =>
@@ -229,6 +240,46 @@ OptimizeEmissionsScenario2AndSaveToCsv(productionUnits, heatDemandEntries, elect
     Console.WriteLine("Optimization finished and saved to CSV!");
 });
 
+
+SaveCsvCommand = new RelayCommand(() =>
+{
+    if (Avalonia.Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        return;
+
+    var opts = new FilePickerSaveOptions
+    {
+        Title = "Save optimization results as…",
+        FileTypeChoices = new List<FilePickerFileType>
+        {
+            new("CSV files") { Patterns = new List<string> { "*.csv" } }
+        },
+        SuggestedFileName = Path.GetFileName(_lastOutputPath)
+    };
+
+    var result = desktop.MainWindow.StorageProvider.SaveFilePickerAsync(opts).GetAwaiter().GetResult();
+    if (result != null)
+    {
+        using var dest = result.OpenWriteAsync().GetAwaiter().GetResult();
+        using var src  = File.OpenRead(_lastOutputPath);
+        src.CopyTo(dest);
+        Console.WriteLine($"✅ Results saved to {result.Name}");
+    }
+
+      if (result != null)
+    {
+        using var dest = result.OpenWriteAsync().GetAwaiter().GetResult();
+        using var src  = File.OpenRead(_lastOutputPath);
+        src.CopyTo(dest);
+
+        // ←— set your status here
+        SaveStatus = $"✅ Saved to “{result.Name}”";
+        Observable
+                .Timer(TimeSpan.FromSeconds(2))
+                // make sure we’re back on the UI thread
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => SaveStatus = "");
+    }
+});
     }
     private void OptimizeCostScenario2AndSaveToCsv(
     List<ProductionUnit> units,

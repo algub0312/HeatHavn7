@@ -33,7 +33,9 @@
                     Series="{Binding ElSeries}" 
                     XAxes="{Binding XAxes}" 
                     YAxes="{Binding YAxes}"
-                    Height="420" />
+                    Height="420" 
+                    ZoomMode="X"
+/>
             </Border>
         </StackPanel>
 
