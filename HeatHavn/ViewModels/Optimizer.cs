@@ -205,7 +205,7 @@ List<TimeSeriesEntry> electricityEntries = StartMonth switch
 
     DateTime startDate = StartDate.Value.DateTime;
     DateTime endDate = EndDate.Value.DateTime;
-    var outputCsvPath = "Data/optimization_results.csv";
+var outputCsvPath = _lastOutputPath;
 
 
 if (Scenario1Enabled)
@@ -392,8 +392,8 @@ Console.WriteLine("✅ Scenario 2 (cost) optimization complete.");
         Debug.WriteLine($"Found {sortedUnits.Count} production units.");
         var results = new List<(DateTime TimeFrom, double GB1, double GB2, double OB1, double HeatDemand, double hourlyCO2)>();
 
-        foreach (var demand in demandEntries.Where(d => d.Timestamp >= startDate && d.Timestamp < endDate))
-        {
+ foreach (var demand in demandEntries.Where(d => d.Timestamp >= startDate && d.Timestamp <= endDate))        
+ {
             double heatNeeded = demand.Value;
             double gb1 = 0, gb2 = 0, ob1 = 0;
             double hourlyCO2 = 0;

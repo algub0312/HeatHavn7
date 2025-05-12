@@ -600,5 +600,3 @@ C:\Users\Claudiu\Desktop\SDU S.P.1\HeatHavn7\HeatHavn\obj\Debug\net9.0\HeatHavnA
 C:\Users\Claudiu\Desktop\SDU S.P.1\HeatHavn7\HeatHavn\obj\Debug\net9.0\ref\HeatHavnAppProject.dll
 C:\Users\Claudiu\Desktop\SDU S.P.1\HeatHavn7\HeatHavn\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.CopyLocal.cache
 C:\Users\Claudiu\Desktop\SDU S.P.1\HeatHavn7\HeatHavn\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.RuntimeCopyLocal.cache
-C:\Users\Mihai\Documents\GitHub\HeatHavn7\HeatHavn\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.CopyLocal.cache
-C:\Users\Mihai\Documents\GitHub\HeatHavn7\HeatHavn\obj\Debug\net9.0\HeatHavnAppProject.csproj.Fody.RuntimeCopyLocal.cache
