@@ -3,7 +3,7 @@ using HeatHavnAppProject.Models;
 
 public class AssetManager
 {
-    public List<ProductionUnit> GetAllUnits()
+    public virtual List<ProductionUnit> GetAllUnits()
     {
         return new List<ProductionUnit>
         {
