@@ -11,4 +11,6 @@ public class ProductionUnit
     public double EnergyConsumption { get; set; }
     public double OilConsumption { get; set; }
     public double GasConsumption { get; set; }
+    public bool IsSelected { get; set; }
+
 }

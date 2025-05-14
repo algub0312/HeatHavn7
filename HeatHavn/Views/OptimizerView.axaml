@@ -3,6 +3,7 @@
              xmlns:vm="clr-namespace:HeatHavnAppProject.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:HeatHavnAppProject.Models"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
              x:Class="HeatHavnAppProject.Views.OptimizerView"
              x:DataType="vm:Optimizer"
@@ -95,7 +96,21 @@
                             <StackPanel Orientation="Horizontal" Spacing="20" HorizontalAlignment="Left">
                                 <CheckBox Content="Scenario 1"  FontWeight="Bold" IsChecked="{Binding Scenario1Enabled}" FontSize="12" Foreground = "Black" />
                                 <CheckBox Content="Scenario 2" FontWeight="Bold" IsChecked="{Binding Scenario2Enabled}" FontSize="12" Foreground = "Black" />
+                                <CheckBox Content="Custom Scenario" 
+          IsChecked="{Binding IsCustomScenarioSelected}" />
+
+
                             </StackPanel>
+
+                            <ListBox ItemsSource="{Binding AvailableUnits}"
+             IsVisible="{Binding IsCustomScenarioSelected}"
+             Margin="20,10,0,0">
+        <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="models:ProductionUnit">
+                <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" />
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
                         </StackPanel>
                     </Grid>
 

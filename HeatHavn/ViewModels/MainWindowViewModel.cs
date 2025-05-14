@@ -55,7 +55,7 @@ namespace HeatHavnAppProject.ViewModels
                     new ProductionUnitsViewModel(assetManagerVM),
                     new HeatDemandViewModel(sourceManager),
                     new ElectricityPricesViewModel(sourceManager),
-                    new Optimizer(sourceManager, assetManager),
+                    new Optimizer(sourceManager, assetManager, assetManagerVM),
                     new ViewModelBase()
                 };
 

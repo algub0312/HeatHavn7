@@ -17,6 +17,7 @@ using System.Globalization;
 using static System.Net.Mime.MediaTypeNames;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using System.Collections.ObjectModel;
 
 namespace HeatHavnAppProject.ViewModels;
 
@@ -29,13 +30,15 @@ public class Optimizer : ViewModelBase
     public List<int> Hours { get; } = Enumerable.Range(0, 24).ToList();
     // Luni disponibile
     public List<string> Months { get; } = new() { "March", "August" };
-        private string _lastOutputPath = "Data/optimization_results.csv";
-    public ICommand SaveCsvCommand   { get; }
+    private string _lastOutputPath = "Data/optimization_results.csv";
+    public ICommand SaveCsvCommand { get; }
     private readonly SourceDataManagerViewModel _sourceDataManager;
     private readonly AssetManager _assetManager;
     public ISeries[] Series { get; set; }
     public Axis[] XAxes { get; set; }
     public Axis[] YAxes { get; set; }
+    public ObservableCollection<ProductionUnit> AvailableUnits { get; set; }
+
 
     // START DATE
     private int _startDay = 1;
@@ -48,12 +51,12 @@ public class Optimizer : ViewModelBase
             UpdateStartDate();
         }
     }
-private bool _scenario2Enabled;
-public bool Scenario2Enabled
-{
-    get => _scenario2Enabled;
-    set => this.RaiseAndSetIfChanged(ref _scenario2Enabled, value);
-}
+    private bool _scenario2Enabled;
+    public bool Scenario2Enabled
+    {
+        get => _scenario2Enabled;
+        set => this.RaiseAndSetIfChanged(ref _scenario2Enabled, value);
+    }
 
     private double _totalCost;
     public double TotalCost
@@ -90,12 +93,12 @@ public bool Scenario2Enabled
             UpdateStartDate();
         }
     }
-private string _saveStatus = "";
-public string SaveStatus
-{
-    get => _saveStatus;
-    set => this.RaiseAndSetIfChanged(ref _saveStatus, value);
-}
+    private string _saveStatus = "";
+    public string SaveStatus
+    {
+        get => _saveStatus;
+        set => this.RaiseAndSetIfChanged(ref _saveStatus, value);
+    }
     private DateTimeOffset? _startDate = DateTimeOffset.Now;
     public DateTimeOffset? StartDate
     {
@@ -170,13 +173,28 @@ public string SaveStatus
         set => this.RaiseAndSetIfChanged(ref _selectedOptimization, value);
     }
 
+    private bool _isCustomScenarioSelected;
+    public bool IsCustomScenarioSelected
+    {
+        get => _isCustomScenarioSelected;
+        set => this.RaiseAndSetIfChanged(ref _isCustomScenarioSelected, value);
+    }
+
+
     public ICommand OptimizeCommand { get; }
 
-    public Optimizer(SourceDataManagerViewModel sourceDataManager, AssetManager assetManager)
-    {_lastOutputPath = "Data/optimization_results.csv"; // default output path
+    public Optimizer(SourceDataManagerViewModel sourceDataManager, AssetManager assetManager, AssetManagerViewModel assetManagerViewModel)
+    {
+        _lastOutputPath = "Data/optimization_results.csv"; // default output path
 
         _sourceDataManager = sourceDataManager;
         _assetManager = assetManager;
+        AvailableUnits = assetManagerViewModel.AllUnits;
+        Debug.WriteLine($"DEBUG: AvailableUnits count = {AvailableUnits.Count}");
+        foreach (var unit in AvailableUnits)
+        {
+            Debug.WriteLine($"DEBUG Unit: {unit.Name}");
+        }
         OptimizeCommand = new RelayCommand(() =>
 {
     Console.WriteLine("Starting optimization...");
@@ -188,12 +206,12 @@ public string SaveStatus
         "August" => _sourceDataManager.SummerDataHeat.ToList(),
         _ => throw new InvalidOperationException("Invalid month selected!")
     };
-List<TimeSeriesEntry> electricityEntries = StartMonth switch
-{
-    "March" => _sourceDataManager.WinterDataEl.ToList(),
-    "August" => _sourceDataManager.SummerDataEl.ToList(),
-    _ => throw new InvalidOperationException("Invalid month selected!")
-};
+    List<TimeSeriesEntry> electricityEntries = StartMonth switch
+    {
+        "March" => _sourceDataManager.WinterDataEl.ToList(),
+        "August" => _sourceDataManager.SummerDataEl.ToList(),
+        _ => throw new InvalidOperationException("Invalid month selected!")
+    };
     if (heatDemandEntries == null || heatDemandEntries.Count == 0)
     {
         Console.WriteLine("Heat demand data is missing!");
@@ -203,37 +221,66 @@ List<TimeSeriesEntry> electricityEntries = StartMonth switch
     // Luam ProductionUnits
     List<ProductionUnit> productionUnits = _assetManager.GetAllUnits();
 
+
     DateTime startDate = StartDate.Value.DateTime;
     DateTime endDate = EndDate.Value.DateTime;
-var outputCsvPath = _lastOutputPath;
+    var outputCsvPath = _lastOutputPath;
 
 
-if (Scenario1Enabled)
-    {if (SelectedOptimization == "Cost")
+    if (Scenario1Enabled)
     {
-        Console.WriteLine("Optimizing by COST...");
-        OptimizeCostScenario1AndSaveToCsv(productionUnits, heatDemandEntries, startDate, endDate, outputCsvPath);
+        if (SelectedOptimization == "Cost")
+        {
+            Console.WriteLine("Optimizing by COST...");
+            OptimizeCostScenario1AndSaveToCsv(productionUnits, heatDemandEntries, startDate, endDate, outputCsvPath);
+        }
+        else if (SelectedOptimization == "Emissions")
+        {
+            Console.WriteLine("Optimizing by EMISSIONS...");
+            OptimizeEmissionsScenario1AndSaveToCsv(productionUnits, heatDemandEntries, startDate, endDate, outputCsvPath);
+        }
+        else
+        {
+            Console.WriteLine("Unknown optimization type!");
+            return;
+        }
     }
-    else if (SelectedOptimization == "Emissions")
+    else if (Scenario2Enabled)
     {
-        Console.WriteLine("Optimizing by EMISSIONS...");
-        OptimizeEmissionsScenario1AndSaveToCsv(productionUnits, heatDemandEntries, startDate, endDate, outputCsvPath);
-    }
-    else
-    {
-        Console.WriteLine("Unknown optimization type!");
-        return;
-    }
-    }
-   else if(Scenario2Enabled)
-   {
-    if (SelectedOptimization == "Cost")
-    OptimizeCostScenario2AndSaveToCsv(productionUnits, heatDemandEntries,electricityEntries,startDate, endDate, outputCsvPath);
-       
-    else if (SelectedOptimization == "Emissions")
-OptimizeEmissionsScenario2AndSaveToCsv(productionUnits, heatDemandEntries, electricityEntries, startDate, endDate, outputCsvPath);
+        if (SelectedOptimization == "Cost")
+            OptimizeCostScenario2AndSaveToCsv(productionUnits, heatDemandEntries, electricityEntries, startDate, endDate, outputCsvPath);
 
-   }
+        else if (SelectedOptimization == "Emissions")
+            OptimizeEmissionsScenario2AndSaveToCsv(productionUnits, heatDemandEntries, electricityEntries, startDate, endDate, outputCsvPath);
+
+    }
+    else if (IsCustomScenarioSelected)
+    {
+        var selectedUnits = AvailableUnits.Where(u => u.IsSelected).ToList();
+
+        if (!selectedUnits.Any())
+        {
+            Console.WriteLine("No units selected for Custom Scenario!");
+            return;
+        }
+
+        if (SelectedOptimization == "Cost")
+        {
+            Console.WriteLine("Optimizing Custom Scenario by COST...");
+            OptimizeCostScenarioCustomAndSaveToCsv(selectedUnits, heatDemandEntries, electricityEntries, startDate, endDate, outputCsvPath);
+        }
+        else if (SelectedOptimization == "Emissions")
+        {
+            Console.WriteLine("Optimizing Custom Scenario by EMISSIONS...");
+            OptimizeEmissionsScenarioCustomAndSaveToCsv(selectedUnits, heatDemandEntries, electricityEntries, startDate, endDate, outputCsvPath);
+        }
+        else
+        {
+            Console.WriteLine("Unknown optimization type for Custom Scenario!");
+            return;
+        }
+    }
+
 
 
     LoadGraphFromCsv(outputCsvPath);
@@ -241,45 +288,45 @@ OptimizeEmissionsScenario2AndSaveToCsv(productionUnits, heatDemandEntries, elect
 });
 
 
-SaveCsvCommand = new RelayCommand(() =>
-{
-    if (Avalonia.Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        return;
-
-    var opts = new FilePickerSaveOptions
-    {
-        Title = "Save optimization results as…",
-        FileTypeChoices = new List<FilePickerFileType>
+        SaveCsvCommand = new RelayCommand(() =>
         {
+            if (Avalonia.Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+
+            var opts = new FilePickerSaveOptions
+            {
+                Title = "Save optimization results as…",
+                FileTypeChoices = new List<FilePickerFileType>
+                {
             new("CSV files") { Patterns = new List<string> { "*.csv" } }
-        },
-        SuggestedFileName = Path.GetFileName(_lastOutputPath)
-    };
+                },
+                SuggestedFileName = Path.GetFileName(_lastOutputPath)
+            };
 
-    var result = desktop.MainWindow.StorageProvider.SaveFilePickerAsync(opts).GetAwaiter().GetResult();
-    if (result != null)
-    {
-        using var dest = result.OpenWriteAsync().GetAwaiter().GetResult();
-        using var src  = File.OpenRead(_lastOutputPath);
-        src.CopyTo(dest);
-        Console.WriteLine($"✅ Results saved to {result.Name}");
-    }
+            var result = desktop.MainWindow.StorageProvider.SaveFilePickerAsync(opts).GetAwaiter().GetResult();
+            if (result != null)
+            {
+                using var dest = result.OpenWriteAsync().GetAwaiter().GetResult();
+                using var src = File.OpenRead(_lastOutputPath);
+                src.CopyTo(dest);
+                Console.WriteLine($"✅ Results saved to {result.Name}");
+            }
 
-      if (result != null)
-    {
-        using var dest = result.OpenWriteAsync().GetAwaiter().GetResult();
-        using var src  = File.OpenRead(_lastOutputPath);
-        src.CopyTo(dest);
+            if (result != null)
+            {
+                using var dest = result.OpenWriteAsync().GetAwaiter().GetResult();
+                using var src = File.OpenRead(_lastOutputPath);
+                src.CopyTo(dest);
 
-        // ←— set your status here
-        SaveStatus = $"✅ Saved to “{result.Name}”";
-        Observable
-                .Timer(TimeSpan.FromSeconds(2))
-                // make sure we’re back on the UI thread
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(_ => SaveStatus = "");
-    }
-});
+                // ←— set your status here
+                SaveStatus = $"✅ Saved to “{result.Name}”";
+                Observable
+                        .Timer(TimeSpan.FromSeconds(2))
+                        // make sure we’re back on the UI thread
+                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .Subscribe(_ => SaveStatus = "");
+            }
+        });
     }
     private void OptimizeCostScenario2AndSaveToCsv(
     List<ProductionUnit> units,
@@ -292,85 +339,85 @@ SaveCsvCommand = new RelayCommand(() =>
         var usedUnits = units
     .Where(u => u.Name != "Gas Boiler 2")
     .ToList();
-double avgElPrice = electricityEntries
-    .Where(e => e.Timestamp >= startDate && e.Timestamp < endDate)
-    .Average(e => e.Value);
-double totalCost = 0;
-double totalCO2 = 0;
+        double avgElPrice = electricityEntries
+            .Where(e => e.Timestamp >= startDate && e.Timestamp < endDate)
+            .Average(e => e.Value);
+        double totalCost = 0;
+        double totalCO2 = 0;
 
-var results = new List<(DateTime Time, double GB1, double OB1, double GM1, double HP1, double HeatDemand, double HourlyCO2, double HourlyCost)>();
-foreach (var demand in heatEntries.Where(h => h.Timestamp >= startDate && h.Timestamp < endDate))
-{
-    var el = electricityEntries.FirstOrDefault(e => e.Timestamp == demand.Timestamp);
-    if (el == null) continue;
+        var results = new List<(DateTime Time, double GB1, double OB1, double GM1, double HP1, double HeatDemand, double HourlyCO2, double HourlyCost)>();
+        foreach (var demand in heatEntries.Where(h => h.Timestamp >= startDate && h.Timestamp < endDate))
+        {
+            var el = electricityEntries.FirstOrDefault(e => e.Timestamp == demand.Timestamp);
+            if (el == null) continue;
 
-    double heatNeeded = demand.Value;
-    double hourlyCost = 0;
-    double hourlyCO2 = 0;
+            double heatNeeded = demand.Value;
+            double hourlyCost = 0;
+            double hourlyCO2 = 0;
 
-    double gb1 = 0, ob1 = 0, gm1 = 0, hp1 = 0;
+            double gb1 = 0, ob1 = 0, gm1 = 0, hp1 = 0;
 
-    // Construim o listă cu costul net, pe baza electricității
-    var unitsWithNetCost = usedUnits.Select(unit =>
-    {
-        double netCost = unit.ProductionCosts;
+            // Construim o listă cu costul net, pe baza electricității
+            var unitsWithNetCost = usedUnits.Select(unit =>
+            {
+                double netCost = unit.ProductionCosts;
 
-     if (unit.Name.Contains("Gas Motor"))
-{
-    netCost -= el.Value * unit.MaxElectricity;
+                if (unit.Name.Contains("Gas Motor"))
+                {
+                    netCost -= el.Value * unit.MaxElectricity;
 
-    if (netCost < 0)
-        netCost = 0; // sau 50, în funcție de modelul economic
-}
+                    if (netCost < 0)
+                        netCost = 0; // sau 50, în funcție de modelul economic
+                }
 
-        else if (unit.Name.Contains("Heat Pump"))
-            netCost += el.Value * Math.Abs(unit.MaxElectricity); // consumă curent -> crește costul
+                else if (unit.Name.Contains("Heat Pump"))
+                    netCost += el.Value * Math.Abs(unit.MaxElectricity); // consumă curent -> crește costul
 
-        return new { Unit = unit, NetCost = netCost };
-    })
-    .OrderBy(x => x.NetCost)
-    .ToList();
+                return new { Unit = unit, NetCost = netCost };
+            })
+            .OrderBy(x => x.NetCost)
+            .ToList();
 
-    foreach (var u in unitsWithNetCost)
-    {
-        if (heatNeeded <= 0)
-            break;
+            foreach (var u in unitsWithNetCost)
+            {
+                if (heatNeeded <= 0)
+                    break;
 
-        var unit = u.Unit;
-        double heatFromUnit = Math.Min(unit.MaxHeat, heatNeeded);
+                var unit = u.Unit;
+                double heatFromUnit = Math.Min(unit.MaxHeat, heatNeeded);
 
-        if (unit.Name == "Gas Boiler 1") gb1 += heatFromUnit;
-        if (unit.Name == "Oil Boiler 1") ob1 += heatFromUnit;
-        if (unit.Name == "Gas Motor 1") gm1 += heatFromUnit;
-        if (unit.Name == "Heat Pump 1") hp1 += heatFromUnit;
+                if (unit.Name == "Gas Boiler 1") gb1 += heatFromUnit;
+                if (unit.Name == "Oil Boiler 1") ob1 += heatFromUnit;
+                if (unit.Name == "Gas Motor 1") gm1 += heatFromUnit;
+                if (unit.Name == "Heat Pump 1") hp1 += heatFromUnit;
 
-        hourlyCost += heatFromUnit * u.NetCost;
-        hourlyCO2 += heatFromUnit * unit.CO2Emissions;
+                hourlyCost += heatFromUnit * u.NetCost;
+                hourlyCO2 += heatFromUnit * unit.CO2Emissions;
 
-        heatNeeded -= heatFromUnit;
-    }
+                heatNeeded -= heatFromUnit;
+            }
 
-    totalCost += hourlyCost;
-    totalCO2 += hourlyCO2;
+            totalCost += hourlyCost;
+            totalCO2 += hourlyCO2;
 
-    results.Add((demand.Timestamp, gb1, ob1, gm1, hp1, demand.Value, hourlyCO2, hourlyCost));
-}
-var dir = Path.GetDirectoryName(outputCsvPath);
-if (!Directory.Exists(dir))
-    Directory.CreateDirectory(dir);
+            results.Add((demand.Timestamp, gb1, ob1, gm1, hp1, demand.Value, hourlyCO2, hourlyCost));
+        }
+        var dir = Path.GetDirectoryName(outputCsvPath);
+        if (!Directory.Exists(dir))
+            Directory.CreateDirectory(dir);
 
-using (var writer = new StreamWriter(outputCsvPath))
-{
-    writer.WriteLine("Time,GB1,OB1,GM1,HP1,HeatDemand,CO2,Cost");
-    foreach (var r in results)
-    {
-        writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm},{r.GB1:F2},{r.OB1:F2},{r.GM1:F2},{r.HP1:F2},{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
-    }
-}
-TotalCost = totalCost;
-TotalCO2 = totalCO2;
+        using (var writer = new StreamWriter(outputCsvPath))
+        {
+            writer.WriteLine("Time,GB1,OB1,GM1,HP1,HeatDemand,CO2,Cost");
+            foreach (var r in results)
+            {
+                writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm},{r.GB1:F2},{r.OB1:F2},{r.GM1:F2},{r.HP1:F2},{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
+            }
+        }
+        TotalCost = totalCost;
+        TotalCO2 = totalCO2;
 
-Console.WriteLine("✅ Scenario 2 (cost) optimization complete.");
+        Console.WriteLine("✅ Scenario 2 (cost) optimization complete.");
 
     }
 
@@ -392,8 +439,8 @@ Console.WriteLine("✅ Scenario 2 (cost) optimization complete.");
         Debug.WriteLine($"Found {sortedUnits.Count} production units.");
         var results = new List<(DateTime TimeFrom, double GB1, double GB2, double OB1, double HeatDemand, double hourlyCO2)>();
 
- foreach (var demand in demandEntries.Where(d => d.Timestamp >= startDate && d.Timestamp <= endDate))        
- {
+        foreach (var demand in demandEntries.Where(d => d.Timestamp >= startDate && d.Timestamp <= endDate))
+        {
             double heatNeeded = demand.Value;
             double gb1 = 0, gb2 = 0, ob1 = 0;
             double hourlyCO2 = 0;
@@ -448,97 +495,97 @@ Console.WriteLine("✅ Scenario 2 (cost) optimization complete.");
         TotalCO2 = totalCO2;
     }
 
-private void OptimizeEmissionsScenario2AndSaveToCsv(
-    List<ProductionUnit> units,
-    List<TimeSeriesEntry> heatEntries,
-    List<TimeSeriesEntry> electricityEntries,
-    DateTime startDate,
-    DateTime endDate,
-    string outputCsvPath)
-{
-    var usedUnits = units
-    .Where(u => u.Name != "Gas Boiler 2")
-    .ToList();
-
-double avgElPrice = electricityEntries
-    .Where(e => e.Timestamp >= startDate && e.Timestamp < endDate)
-    .Average(e => e.Value);
-
-double totalCost = 0;
-double totalCO2 = 0;
-
-var results = new List<(DateTime Time, double GB1, double OB1, double GM1, double HP1, double HeatDemand, double HourlyCO2, double HourlyCost)>();
-foreach (var demand in heatEntries.Where(h => h.Timestamp >= startDate && h.Timestamp < endDate))
-{
-    var el = electricityEntries.FirstOrDefault(e => e.Timestamp == demand.Timestamp);
-    if (el == null) continue;
-
-    double heatNeeded = demand.Value;
-    double hourlyCost = 0;
-    double hourlyCO2 = 0;
-
-    double gb1 = 0, ob1 = 0, gm1 = 0, hp1 = 0;
-
-    // Ajustăm emisiile luând în considerare impactul electricității
-    var unitsWithNetCO2 = usedUnits.Select(unit =>
+    private void OptimizeEmissionsScenario2AndSaveToCsv(
+        List<ProductionUnit> units,
+        List<TimeSeriesEntry> heatEntries,
+        List<TimeSeriesEntry> electricityEntries,
+        DateTime startDate,
+        DateTime endDate,
+        string outputCsvPath)
     {
-        double netCO2 = unit.CO2Emissions;
+        var usedUnits = units
+        .Where(u => u.Name != "Gas Boiler 2")
+        .ToList();
 
-        // Dacă motorul produce curent (pozitiv), scade impactul de emisii
-        if (unit.Name.Contains("Gas Motor"))
-            netCO2 -= 0; // Presupunem 0 impact suplimentar pentru curent produs
+        double avgElPrice = electricityEntries
+            .Where(e => e.Timestamp >= startDate && e.Timestamp < endDate)
+            .Average(e => e.Value);
 
-        // Dacă pompa consumă curent (negativ MaxElectricity), adăugăm emisii suplimentare
-        if (unit.Name.Contains("Heat Pump"))
-            netCO2 += el.Value * 0.3; // presupunem 0.3 kg CO2 / DKK (exemplu)
+        double totalCost = 0;
+        double totalCO2 = 0;
 
-        return new { Unit = unit, NetCO2 = netCO2 };
-    })
-    .OrderBy(x => x.NetCO2)
-    .ToList();
+        var results = new List<(DateTime Time, double GB1, double OB1, double GM1, double HP1, double HeatDemand, double HourlyCO2, double HourlyCost)>();
+        foreach (var demand in heatEntries.Where(h => h.Timestamp >= startDate && h.Timestamp < endDate))
+        {
+            var el = electricityEntries.FirstOrDefault(e => e.Timestamp == demand.Timestamp);
+            if (el == null) continue;
 
-    foreach (var u in unitsWithNetCO2)
-    {
-        if (heatNeeded <= 0)
-            break;
+            double heatNeeded = demand.Value;
+            double hourlyCost = 0;
+            double hourlyCO2 = 0;
 
-        var unit = u.Unit;
-        double heatFromUnit = Math.Min(unit.MaxHeat, heatNeeded);
+            double gb1 = 0, ob1 = 0, gm1 = 0, hp1 = 0;
 
-        if (unit.Name == "Gas Boiler 1") gb1 += heatFromUnit;
-        if (unit.Name == "Oil Boiler 1") ob1 += heatFromUnit;
-        if (unit.Name == "Gas Motor 1") gm1 += heatFromUnit;
-        if (unit.Name == "Heat Pump 1") hp1 += heatFromUnit;
+            // Ajustăm emisiile luând în considerare impactul electricității
+            var unitsWithNetCO2 = usedUnits.Select(unit =>
+            {
+                double netCO2 = unit.CO2Emissions;
 
-        hourlyCost += heatFromUnit * unit.ProductionCosts;
-        hourlyCO2 += heatFromUnit * unit.CO2Emissions;
+                // Dacă motorul produce curent (pozitiv), scade impactul de emisii
+                if (unit.Name.Contains("Gas Motor"))
+                    netCO2 -= 0; // Presupunem 0 impact suplimentar pentru curent produs
 
-        heatNeeded -= heatFromUnit;
+                // Dacă pompa consumă curent (negativ MaxElectricity), adăugăm emisii suplimentare
+                if (unit.Name.Contains("Heat Pump"))
+                    netCO2 += el.Value * 0.3; // presupunem 0.3 kg CO2 / DKK (exemplu)
+
+                return new { Unit = unit, NetCO2 = netCO2 };
+            })
+            .OrderBy(x => x.NetCO2)
+            .ToList();
+
+            foreach (var u in unitsWithNetCO2)
+            {
+                if (heatNeeded <= 0)
+                    break;
+
+                var unit = u.Unit;
+                double heatFromUnit = Math.Min(unit.MaxHeat, heatNeeded);
+
+                if (unit.Name == "Gas Boiler 1") gb1 += heatFromUnit;
+                if (unit.Name == "Oil Boiler 1") ob1 += heatFromUnit;
+                if (unit.Name == "Gas Motor 1") gm1 += heatFromUnit;
+                if (unit.Name == "Heat Pump 1") hp1 += heatFromUnit;
+
+                hourlyCost += heatFromUnit * unit.ProductionCosts;
+                hourlyCO2 += heatFromUnit * unit.CO2Emissions;
+
+                heatNeeded -= heatFromUnit;
+            }
+
+            totalCost += hourlyCost;
+            totalCO2 += hourlyCO2;
+
+            results.Add((demand.Timestamp, gb1, ob1, gm1, hp1, demand.Value, hourlyCO2, hourlyCost));
+        }
+        var dir = Path.GetDirectoryName(outputCsvPath);
+        if (!Directory.Exists(dir))
+            Directory.CreateDirectory(dir);
+
+        using (var writer = new StreamWriter(outputCsvPath))
+        {
+            writer.WriteLine("Time,GB1,OB1,GM1,HP1,HeatDemand,CO2,Cost");
+            foreach (var r in results)
+            {
+                writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm},{r.GB1:F2},{r.OB1:F2},{r.GM1:F2},{r.HP1:F2},{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
+            }
+        }
+        TotalCost = totalCost;
+        TotalCO2 = totalCO2;
+
+        Console.WriteLine("✅ Scenario 2 (emissions) optimization complete.");
+
     }
-
-    totalCost += hourlyCost;
-    totalCO2 += hourlyCO2;
-
-    results.Add((demand.Timestamp, gb1, ob1, gm1, hp1, demand.Value, hourlyCO2, hourlyCost));
-}
-var dir = Path.GetDirectoryName(outputCsvPath);
-if (!Directory.Exists(dir))
-    Directory.CreateDirectory(dir);
-
-using (var writer = new StreamWriter(outputCsvPath))
-{
-    writer.WriteLine("Time,GB1,OB1,GM1,HP1,HeatDemand,CO2,Cost");
-    foreach (var r in results)
-    {
-        writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm},{r.GB1:F2},{r.OB1:F2},{r.GM1:F2},{r.HP1:F2},{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
-    }
-}
-TotalCost = totalCost;
-TotalCO2 = totalCO2;
-
-Console.WriteLine("✅ Scenario 2 (emissions) optimization complete.");
-
-}
 
     private void OptimizeEmissionsScenario1AndSaveToCsv(
     List<ProductionUnit> units,
@@ -608,6 +655,175 @@ Console.WriteLine("✅ Scenario 2 (emissions) optimization complete.");
 
     }
 
+    private void OptimizeCostScenarioCustomAndSaveToCsv(
+    List<ProductionUnit> selectedUnits,
+    List<TimeSeriesEntry> heatEntries,
+    List<TimeSeriesEntry> electricityEntries,
+    DateTime startDate,
+    DateTime endDate,
+    string outputCsvPath)
+    {
+        double totalCost = 0;
+        double totalCO2 = 0;
+
+        // Rezultate: Time, HeatDemand, CO2, Cost, productie per unitate
+        var results = new List<(DateTime Time, double HeatDemand, double HourlyCO2, double HourlyCost, Dictionary<ProductionUnit, double> UnitProductions)>();
+
+        foreach (var demand in heatEntries.Where(h => h.Timestamp >= startDate && h.Timestamp < endDate))
+        {
+            var el = electricityEntries.FirstOrDefault(e => e.Timestamp == demand.Timestamp);
+            if (el == null) continue;
+
+            double heatNeeded = demand.Value;
+            double hourlyCost = 0;
+            double hourlyCO2 = 0;
+
+            var unitProductions = selectedUnits.ToDictionary(u => u, u => 0.0);
+
+            var unitsWithNetCost = selectedUnits.Select(unit =>
+            {
+                double netCost = unit.ProductionCosts;
+
+                if (unit.Name.Contains("Gas Motor"))
+                    netCost = Math.Max(0, netCost - el.Value * unit.MaxElectricity);
+
+                else if (unit.Name.Contains("Heat Pump"))
+                    netCost += el.Value * Math.Abs(unit.MaxElectricity);
+
+                return new { Unit = unit, NetCost = netCost };
+            })
+            .OrderBy(x => x.NetCost)
+            .ToList();
+
+            foreach (var u in unitsWithNetCost)
+            {
+                if (heatNeeded <= 0)
+                    break;
+
+                var unit = u.Unit;
+                double heatFromUnit = Math.Min(unit.MaxHeat, heatNeeded);
+
+                hourlyCost += heatFromUnit * u.NetCost;
+                hourlyCO2 += heatFromUnit * unit.CO2Emissions;
+
+                unitProductions[unit] += heatFromUnit;
+
+                heatNeeded -= heatFromUnit;
+            }
+
+            totalCost += hourlyCost;
+            totalCO2 += hourlyCO2;
+
+            results.Add((demand.Timestamp, demand.Value, hourlyCO2, hourlyCost, unitProductions));
+        }
+
+        var dir = Path.GetDirectoryName(outputCsvPath);
+        if (!Directory.Exists(dir))
+            Directory.CreateDirectory(dir);
+
+        using (var writer = new StreamWriter(outputCsvPath))
+        {
+            // HEADER dinamic: Time, HeatDemand, CO2, Cost, + numele unităților selectate
+            var unitHeaders = selectedUnits.Select(u => u.Name.Replace(" ", "_"));
+            writer.WriteLine($"Time,{string.Join(",", unitHeaders)},HeatDemand,CO2,Cost");
+
+            foreach (var r in results)
+            {
+                var unitValues = selectedUnits.Select(u => r.UnitProductions[u].ToString("F2"));
+                writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm},{string.Join(",", unitValues)},{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
+            }
+        }
+
+        TotalCost = totalCost;
+        TotalCO2 = totalCO2;
+
+        Console.WriteLine("✅ Custom Scenario (Cost with unit productions) optimization complete.");
+    }
+
+    private void OptimizeEmissionsScenarioCustomAndSaveToCsv(
+        List<ProductionUnit> selectedUnits,
+        List<TimeSeriesEntry> heatEntries,
+        List<TimeSeriesEntry> electricityEntries,
+        DateTime startDate,
+        DateTime endDate,
+        string outputCsvPath)
+    {
+        double totalCost = 0;
+        double totalCO2 = 0;
+
+        var results = new List<(DateTime Time, double HeatDemand, double HourlyCO2, double HourlyCost)>();
+
+        foreach (var demand in heatEntries.Where(h => h.Timestamp >= startDate && h.Timestamp < endDate))
+        {
+            var el = electricityEntries.FirstOrDefault(e => e.Timestamp == demand.Timestamp);
+            if (el == null) continue;
+
+            double heatNeeded = demand.Value;
+            double hourlyCost = 0;
+            double hourlyCO2 = 0;
+
+            // Calculăm NetEmissions pentru unități, ținând cont de electricitate
+            var unitsWithNetEmissions = selectedUnits.Select(unit =>
+            {
+                double netEmissions = unit.CO2Emissions;
+
+                if (unit.Name.Contains("Gas Motor"))
+                {
+                    // Produce electricitate -> scade din emisiile totale indirect
+                    netEmissions -= 0; // aici poți pune o ajustare dacă vrei (ex: credits)
+                }
+                else if (unit.Name.Contains("Heat Pump"))
+                {
+                    // Consumă electricitate -> crește emisiile indirect
+                    netEmissions += 0; // aici poți pune un factor dacă vrei (ex: electric grid emissions)
+                }
+
+                return new { Unit = unit, NetEmissions = netEmissions };
+            })
+            .OrderBy(x => x.NetEmissions)
+            .ToList();
+
+            // Producem căldura necesară folosind unitățile selectate
+            foreach (var u in unitsWithNetEmissions)
+            {
+                if (heatNeeded <= 0)
+                    break;
+
+                var unit = u.Unit;
+                double heatFromUnit = Math.Min(unit.MaxHeat, heatNeeded);
+
+                hourlyCost += heatFromUnit * unit.ProductionCosts;
+                hourlyCO2 += heatFromUnit * u.NetEmissions;
+
+                heatNeeded -= heatFromUnit;
+            }
+
+            totalCost += hourlyCost;
+            totalCO2 += hourlyCO2;
+
+            results.Add((demand.Timestamp, demand.Value, hourlyCO2, hourlyCost));
+        }
+
+        var dir = Path.GetDirectoryName(outputCsvPath);
+        if (!Directory.Exists(dir))
+            Directory.CreateDirectory(dir);
+
+        using (var writer = new StreamWriter(outputCsvPath))
+        {
+            writer.WriteLine("Time,HeatDemand,CO2,Cost");
+            foreach (var r in results)
+            {
+                writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm},{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
+            }
+        }
+
+        TotalCost = totalCost;
+        TotalCO2 = totalCO2;
+
+        Console.WriteLine("✅ Custom Scenario (Emissions) optimization complete.");
+    }
+
+
 
     private void LoadGraphFromCsv(string filePath)
     {
@@ -630,30 +846,30 @@ Console.WriteLine("✅ Scenario 2 (emissions) optimization complete.");
 
         var lines = File.ReadAllLines(filePath);
         foreach (var line in lines.Skip(1))
-{
-    var parts = line.Split(',');
+        {
+            var parts = line.Split(',');
 
-    // SCENARIUL 2: CSV cu 8 coloane
-    if (parts.Length >= 8)
-    {
-        timestamps.Add(DateTime.Parse(parts[0]).ToString("HH:mm"));
-        gb1.Add(double.Parse(parts[1], CultureInfo.InvariantCulture));
-        ob1.Add(double.Parse(parts[2], CultureInfo.InvariantCulture));
-        gm1.Add(double.Parse(parts[3], CultureInfo.InvariantCulture));
-        hp1.Add(double.Parse(parts[4], CultureInfo.InvariantCulture));
-        heatDemand.Add(double.Parse(parts[5], CultureInfo.InvariantCulture));
-    }
-    // SCENARIUL 1: CSV cu 6 coloane
-    else if (parts.Length >= 6)
-    {
-        timestamps.Add(DateTime.Parse(parts[0]).ToString("HH:mm"));
-        gb1.Add(double.Parse(parts[1], CultureInfo.InvariantCulture));
-        gb2.Add(double.Parse(parts[2], CultureInfo.InvariantCulture));
-        ob1.Add(double.Parse(parts[3], CultureInfo.InvariantCulture));
-        heatDemand.Add(double.Parse(parts[4], CultureInfo.InvariantCulture));
-        // gm1 și hp1 rămân goale implicit
-    }
-}
+            // SCENARIUL 2: CSV cu 8 coloane
+            if (parts.Length >= 8)
+            {
+                timestamps.Add(DateTime.Parse(parts[0]).ToString("HH:mm"));
+                gb1.Add(double.Parse(parts[1], CultureInfo.InvariantCulture));
+                ob1.Add(double.Parse(parts[2], CultureInfo.InvariantCulture));
+                gm1.Add(double.Parse(parts[3], CultureInfo.InvariantCulture));
+                hp1.Add(double.Parse(parts[4], CultureInfo.InvariantCulture));
+                heatDemand.Add(double.Parse(parts[5], CultureInfo.InvariantCulture));
+            }
+            // SCENARIUL 1: CSV cu 6 coloane
+            else if (parts.Length >= 6)
+            {
+                timestamps.Add(DateTime.Parse(parts[0]).ToString("HH:mm"));
+                gb1.Add(double.Parse(parts[1], CultureInfo.InvariantCulture));
+                gb2.Add(double.Parse(parts[2], CultureInfo.InvariantCulture));
+                ob1.Add(double.Parse(parts[3], CultureInfo.InvariantCulture));
+                heatDemand.Add(double.Parse(parts[4], CultureInfo.InvariantCulture));
+                // gm1 și hp1 rămân goale implicit
+            }
+        }
 
         Series = new ISeries[]
         {
