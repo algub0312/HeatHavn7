@@ -654,20 +654,22 @@ public class Optimizer : ViewModelBase
         TotalCost = totalCost;
 
     }
-
     private void OptimizeCostScenarioCustomAndSaveToCsv(
-    List<ProductionUnit> selectedUnits,
-    List<TimeSeriesEntry> heatEntries,
-    List<TimeSeriesEntry> electricityEntries,
-    DateTime startDate,
-    DateTime endDate,
-    string outputCsvPath)
+        List<ProductionUnit> selectedUnits,
+        List<TimeSeriesEntry> heatEntries,
+        List<TimeSeriesEntry> electricityEntries,
+        DateTime startDate,
+        DateTime endDate,
+        string outputCsvPath)
     {
         double totalCost = 0;
         double totalCO2 = 0;
 
+        // Fixăm boilerele in ordinea dorită
+        var fixedUnitOrder = new[] { "Gas Boiler 1", "Gas Boiler 2", "Oil Boiler 1", "Gas Motor 1", "Heat Pump 1" };
+
         // Rezultate: Time, HeatDemand, CO2, Cost, productie per unitate
-        var results = new List<(DateTime Time, double HeatDemand, double HourlyCO2, double HourlyCost, Dictionary<ProductionUnit, double> UnitProductions)>();
+        var results = new List<(DateTime Time, double HeatDemand, double HourlyCO2, double HourlyCost, Dictionary<string, double> UnitProductions)>();
 
         foreach (var demand in heatEntries.Where(h => h.Timestamp >= startDate && h.Timestamp < endDate))
         {
@@ -678,7 +680,8 @@ public class Optimizer : ViewModelBase
             double hourlyCost = 0;
             double hourlyCO2 = 0;
 
-            var unitProductions = selectedUnits.ToDictionary(u => u, u => 0.0);
+            // Pregătim producția pentru toate unitățile (chiar dacă nu sunt selectate)
+            var unitProductions = fixedUnitOrder.ToDictionary(u => u, u => 0.0);
 
             var unitsWithNetCost = selectedUnits.Select(unit =>
             {
@@ -706,7 +709,8 @@ public class Optimizer : ViewModelBase
                 hourlyCost += heatFromUnit * u.NetCost;
                 hourlyCO2 += heatFromUnit * unit.CO2Emissions;
 
-                unitProductions[unit] += heatFromUnit;
+                if (unitProductions.ContainsKey(unit.Name))
+                    unitProductions[unit.Name] += heatFromUnit;
 
                 heatNeeded -= heatFromUnit;
             }
@@ -723,14 +727,18 @@ public class Optimizer : ViewModelBase
 
         using (var writer = new StreamWriter(outputCsvPath))
         {
-            // HEADER dinamic: Time, HeatDemand, CO2, Cost, + numele unităților selectate
-            var unitHeaders = selectedUnits.Select(u => u.Name.Replace(" ", "_"));
-            writer.WriteLine($"Time,{string.Join(",", unitHeaders)},HeatDemand,CO2,Cost");
+            // 🔥 Header FIX: Time, GB1, GB2, OB1, GM1, HP1, HeatDemand, CO2, Cost
+            writer.WriteLine("Time,GB1,GB2,OB1,GM1,HP1,HeatDemand,CO2,Cost");
 
             foreach (var r in results)
             {
-                var unitValues = selectedUnits.Select(u => r.UnitProductions[u].ToString("F2"));
-                writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm},{string.Join(",", unitValues)},{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
+                var gb1 = r.UnitProductions["Gas Boiler 1"];
+                var gb2 = r.UnitProductions["Gas Boiler 2"];
+                var ob1 = r.UnitProductions["Oil Boiler 1"];
+                var gm1 = r.UnitProductions["Gas Motor 1"];
+                var hp1 = r.UnitProductions["Heat Pump 1"];
+
+                writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm},{gb1:F2},{gb2:F2},{ob1:F2},{gm1:F2},{hp1:F2},{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
             }
         }
 
@@ -741,17 +749,19 @@ public class Optimizer : ViewModelBase
     }
 
     private void OptimizeEmissionsScenarioCustomAndSaveToCsv(
-        List<ProductionUnit> selectedUnits,
-        List<TimeSeriesEntry> heatEntries,
-        List<TimeSeriesEntry> electricityEntries,
-        DateTime startDate,
-        DateTime endDate,
-        string outputCsvPath)
+     List<ProductionUnit> selectedUnits,
+     List<TimeSeriesEntry> heatEntries,
+     List<TimeSeriesEntry> electricityEntries,
+     DateTime startDate,
+     DateTime endDate,
+     string outputCsvPath)
     {
         double totalCost = 0;
         double totalCO2 = 0;
 
-        var results = new List<(DateTime Time, double HeatDemand, double HourlyCO2, double HourlyCost)>();
+        var fixedUnitOrder = new[] { "Gas Boiler 1", "Gas Boiler 2", "Oil Boiler 1", "Gas Motor 1", "Heat Pump 1" };
+
+        var results = new List<(DateTime Time, double HeatDemand, double HourlyCO2, double HourlyCost, Dictionary<string, double> UnitProductions)>();
 
         foreach (var demand in heatEntries.Where(h => h.Timestamp >= startDate && h.Timestamp < endDate))
         {
@@ -762,20 +772,19 @@ public class Optimizer : ViewModelBase
             double hourlyCost = 0;
             double hourlyCO2 = 0;
 
-            // Calculăm NetEmissions pentru unități, ținând cont de electricitate
+            var unitProductions = fixedUnitOrder.ToDictionary(u => u, u => 0.0);
+
             var unitsWithNetEmissions = selectedUnits.Select(unit =>
             {
                 double netEmissions = unit.CO2Emissions;
 
                 if (unit.Name.Contains("Gas Motor"))
                 {
-                    // Produce electricitate -> scade din emisiile totale indirect
-                    netEmissions -= 0; // aici poți pune o ajustare dacă vrei (ex: credits)
+                    // Dacă vrei să scazi indirect prin producție de electricitate, adaugi logica aici
                 }
                 else if (unit.Name.Contains("Heat Pump"))
                 {
-                    // Consumă electricitate -> crește emisiile indirect
-                    netEmissions += 0; // aici poți pune un factor dacă vrei (ex: electric grid emissions)
+                    // Dacă vrei să adaugi emisiile indirecte din consumul de electricitate, pui aici
                 }
 
                 return new { Unit = unit, NetEmissions = netEmissions };
@@ -783,7 +792,6 @@ public class Optimizer : ViewModelBase
             .OrderBy(x => x.NetEmissions)
             .ToList();
 
-            // Producem căldura necesară folosind unitățile selectate
             foreach (var u in unitsWithNetEmissions)
             {
                 if (heatNeeded <= 0)
@@ -795,13 +803,16 @@ public class Optimizer : ViewModelBase
                 hourlyCost += heatFromUnit * unit.ProductionCosts;
                 hourlyCO2 += heatFromUnit * u.NetEmissions;
 
+                if (unitProductions.ContainsKey(unit.Name))
+                    unitProductions[unit.Name] += heatFromUnit;
+
                 heatNeeded -= heatFromUnit;
             }
 
             totalCost += hourlyCost;
             totalCO2 += hourlyCO2;
 
-            results.Add((demand.Timestamp, demand.Value, hourlyCO2, hourlyCost));
+            results.Add((demand.Timestamp, demand.Value, hourlyCO2, hourlyCost, unitProductions));
         }
 
         var dir = Path.GetDirectoryName(outputCsvPath);
@@ -810,33 +821,40 @@ public class Optimizer : ViewModelBase
 
         using (var writer = new StreamWriter(outputCsvPath))
         {
-            writer.WriteLine("Time,HeatDemand,CO2,Cost");
+            writer.WriteLine("Time,GB1,GB2,OB1,GM1,HP1,HeatDemand,CO2,Cost");
+
             foreach (var r in results)
             {
-                writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm},{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
+                var gb1 = r.UnitProductions["Gas Boiler 1"];
+                var gb2 = r.UnitProductions["Gas Boiler 2"];
+                var ob1 = r.UnitProductions["Oil Boiler 1"];
+                var gm1 = r.UnitProductions["Gas Motor 1"];
+                var hp1 = r.UnitProductions["Heat Pump 1"];
+
+                writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm},{gb1:F2},{gb2:F2},{ob1:F2},{gm1:F2},{hp1:F2},{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
             }
         }
 
         TotalCost = totalCost;
         TotalCO2 = totalCO2;
 
-        Console.WriteLine("✅ Custom Scenario (Emissions) optimization complete.");
+        Console.WriteLine("✅ Custom Scenario (Emissions with unit productions) optimization complete.");
     }
+
 
 
 
     private void LoadGraphFromCsv(string filePath)
     {
         Console.WriteLine("Loading graph from CSV...");
-        var gm1 = new List<double>();
-        var hp1 = new List<double>();
+
+        var timestamps = new List<string>();
+        var heatDemand = new List<double>();
         var gb1 = new List<double>();
         var gb2 = new List<double>();
         var ob1 = new List<double>();
-        var heatDemand = new List<double>();
-        var timestamps = new List<string>();
-        var co2Values = new List<double>();
-
+        var gm1 = new List<double>();
+        var hp1 = new List<double>();
 
         if (!File.Exists(filePath))
         {
@@ -845,77 +863,71 @@ public class Optimizer : ViewModelBase
         }
 
         var lines = File.ReadAllLines(filePath);
+        var header = lines[0].Split(',');
+
+        // 🔥 Găsim indexul corect al fiecărui boiler
+        int gb1Index = Array.FindIndex(header, h => h.Contains("GB1", StringComparison.OrdinalIgnoreCase));
+        int gb2Index = Array.FindIndex(header, h => h.Contains("GB2", StringComparison.OrdinalIgnoreCase));
+        int ob1Index = Array.FindIndex(header, h => h.Contains("OB1", StringComparison.OrdinalIgnoreCase));
+        int gm1Index = Array.FindIndex(header, h => h.Contains("GM1", StringComparison.OrdinalIgnoreCase));
+        int hp1Index = Array.FindIndex(header, h => h.Contains("HP1", StringComparison.OrdinalIgnoreCase));
+        int heatDemandIndex = Array.FindIndex(header, h => h.Contains("Heat", StringComparison.OrdinalIgnoreCase));
+
         foreach (var line in lines.Skip(1))
         {
             var parts = line.Split(',');
 
-            // SCENARIUL 2: CSV cu 8 coloane
-            if (parts.Length >= 8)
-            {
-                timestamps.Add(DateTime.Parse(parts[0]).ToString("HH:mm"));
-                gb1.Add(double.Parse(parts[1], CultureInfo.InvariantCulture));
-                ob1.Add(double.Parse(parts[2], CultureInfo.InvariantCulture));
-                gm1.Add(double.Parse(parts[3], CultureInfo.InvariantCulture));
-                hp1.Add(double.Parse(parts[4], CultureInfo.InvariantCulture));
-                heatDemand.Add(double.Parse(parts[5], CultureInfo.InvariantCulture));
-            }
-            // SCENARIUL 1: CSV cu 6 coloane
-            else if (parts.Length >= 6)
-            {
-                timestamps.Add(DateTime.Parse(parts[0]).ToString("HH:mm"));
-                gb1.Add(double.Parse(parts[1], CultureInfo.InvariantCulture));
-                gb2.Add(double.Parse(parts[2], CultureInfo.InvariantCulture));
-                ob1.Add(double.Parse(parts[3], CultureInfo.InvariantCulture));
-                heatDemand.Add(double.Parse(parts[4], CultureInfo.InvariantCulture));
-                // gm1 și hp1 rămân goale implicit
-            }
+            if (parts.Length < 2) continue;
+
+            timestamps.Add(DateTime.Parse(parts[0]).ToString("HH:mm"));
+
+            if (gb1Index != -1 && gb1Index < parts.Length)
+                gb1.Add(double.Parse(parts[gb1Index], CultureInfo.InvariantCulture));
+            else
+                gb1.Add(0);
+
+            if (gb2Index != -1 && gb2Index < parts.Length)
+                gb2.Add(double.Parse(parts[gb2Index], CultureInfo.InvariantCulture));
+            else
+                gb2.Add(0);
+
+            if (ob1Index != -1 && ob1Index < parts.Length)
+                ob1.Add(double.Parse(parts[ob1Index], CultureInfo.InvariantCulture));
+            else
+                ob1.Add(0);
+
+            if (gm1Index != -1 && gm1Index < parts.Length)
+                gm1.Add(double.Parse(parts[gm1Index], CultureInfo.InvariantCulture));
+            else
+                gm1.Add(0);
+
+            if (hp1Index != -1 && hp1Index < parts.Length)
+                hp1.Add(double.Parse(parts[hp1Index], CultureInfo.InvariantCulture));
+            else
+                hp1.Add(0);
+
+            if (heatDemandIndex != -1 && heatDemandIndex < parts.Length)
+                heatDemand.Add(double.Parse(parts[heatDemandIndex], CultureInfo.InvariantCulture));
         }
 
+        // Series exact ca la tine:
         Series = new ISeries[]
         {
-        new StackedAreaSeries<double>
-        {
-            Name = "GB1",
-            Values = gb1,
-
-
-        },
-        new StackedAreaSeries<double>
-        {
-            Name = "GB2",
-            Values = gb2,
-
-        },
-        new StackedAreaSeries<double>
-        {
-            Name = "OB1",
-            Values = ob1,
-
-        },
-        new StackedAreaSeries<double>
-    {
-        Name = "GM1",
-        Values = gm1,
-    },
-    new StackedAreaSeries<double>
-    {
-        Name = "HP1",
-        Values = hp1,
-    },
+        new StackedAreaSeries<double> { Name = "GB1", Values = gb1 },
+        new StackedAreaSeries<double> { Name = "GB2", Values = gb2 },
+        new StackedAreaSeries<double> { Name = "OB1", Values = ob1 },
+        new StackedAreaSeries<double> { Name = "GM1", Values = gm1 },
+        new StackedAreaSeries<double> { Name = "HP1", Values = hp1 },
         new LineSeries<double>
         {
             Name = "Heat Demand",
-        Values = heatDemand,
-        Stroke = new SolidColorPaint(SKColors.DeepSkyBlue, 2),
-        Fill = null,
-        GeometryFill = new SolidColorPaint(SKColors.White),
-        GeometryStroke = new SolidColorPaint(SKColors.DeepSkyBlue, 2),
-        GeometrySize = 10
-
-
-
-}
-
+            Values = heatDemand,
+            Stroke = new SolidColorPaint(SKColors.DeepSkyBlue, 2),
+            Fill = null,
+            GeometryFill = new SolidColorPaint(SKColors.White),
+            GeometryStroke = new SolidColorPaint(SKColors.DeepSkyBlue, 2),
+            GeometrySize = 10
+        }
         };
 
         XAxes = new[]
@@ -925,9 +937,9 @@ public class Optimizer : ViewModelBase
             Labels = timestamps,
             LabelsRotation = 45,
             TextSize = 10,
-         LabelsPaint = new SolidColorPaint(SKColors.Black),
-        TicksPaint = new SolidColorPaint(SKColors.Black),
-        NamePaint = new SolidColorPaint(SKColors.Black)
+            LabelsPaint = new SolidColorPaint(SKColors.Black),
+            TicksPaint = new SolidColorPaint(SKColors.Black),
+            NamePaint = new SolidColorPaint(SKColors.Black)
         }
     };
 
@@ -938,8 +950,8 @@ public class Optimizer : ViewModelBase
             Name = "MW",
             TextSize = 10,
             LabelsPaint = new SolidColorPaint(SKColors.Black),
-        TicksPaint = new SolidColorPaint(SKColors.Black),
-        NamePaint = new SolidColorPaint(SKColors.Black)
+            TicksPaint = new SolidColorPaint(SKColors.Black),
+            NamePaint = new SolidColorPaint(SKColors.Black)
         }
     };
 
@@ -947,4 +959,7 @@ public class Optimizer : ViewModelBase
         this.RaisePropertyChanged(nameof(XAxes));
         this.RaisePropertyChanged(nameof(YAxes));
     }
+
+
+
 }
