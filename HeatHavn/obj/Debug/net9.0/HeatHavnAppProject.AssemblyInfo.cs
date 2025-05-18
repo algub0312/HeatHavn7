@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HeatHavnAppProject")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0e2c2df0e38a6e23fff7a984f80f911f1855282a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+43a2a81fcba72d55b8224abcc27998c531f379c9")]
 [assembly: System.Reflection.AssemblyProductAttribute("HeatHavnAppProject")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HeatHavnAppProject")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -96,14 +96,16 @@
                             <StackPanel Orientation="Horizontal" Spacing="20" HorizontalAlignment="Left">
                                 <CheckBox Content="Scenario 1"  FontWeight="Bold" IsChecked="{Binding Scenario1Enabled}" FontSize="12" Foreground = "Black" />
                                 <CheckBox Content="Scenario 2" FontWeight="Bold" IsChecked="{Binding Scenario2Enabled}" FontSize="12" Foreground = "Black" />
-                                <CheckBox Content="Custom Scenario" 
+                                <CheckBox Content="Custom Scenario" FontSize="12" Foreground = "Black"  FontWeight="Bold"
           IsChecked="{Binding IsCustomScenarioSelected}" />
 
 
                             </StackPanel>
 
                             <ListBox ItemsSource="{Binding AvailableUnits}"
-             IsVisible="{Binding IsCustomScenarioSelected}"
+                            Background =  "#969696"
+                             IsVisible="{Binding IsCustomScenarioSelected}"
+                           FontWeight="Bold"
              Margin="20,10,0,0">
         <ListBox.ItemTemplate>
             <DataTemplate x:DataType="models:ProductionUnit">

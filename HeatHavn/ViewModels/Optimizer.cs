@@ -55,7 +55,15 @@ public class Optimizer : ViewModelBase
     public bool Scenario2Enabled
     {
         get => _scenario2Enabled;
-        set => this.RaiseAndSetIfChanged(ref _scenario2Enabled, value);
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _scenario2Enabled, value);
+            if (value)
+            {
+                Scenario1Enabled = false;
+                IsCustomScenarioSelected = false;
+            }
+        }
     }
 
     private double _totalCost;
@@ -163,7 +171,15 @@ public class Optimizer : ViewModelBase
     public bool Scenario1Enabled
     {
         get => _scenario1Enabled;
-        set => this.RaiseAndSetIfChanged(ref _scenario1Enabled, value);
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _scenario1Enabled, value);
+            if (value)
+            {
+                Scenario2Enabled = false;
+                IsCustomScenarioSelected = false;
+            }
+        }
     }
 
     private string _selectedOptimization = "Cost";
@@ -177,7 +193,15 @@ public class Optimizer : ViewModelBase
     public bool IsCustomScenarioSelected
     {
         get => _isCustomScenarioSelected;
-        set => this.RaiseAndSetIfChanged(ref _isCustomScenarioSelected, value);
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _isCustomScenarioSelected, value);
+            if (value)
+            {
+                Scenario1Enabled = false;
+                Scenario2Enabled = false;
+            }
+        }
     }
 
 
@@ -329,23 +353,25 @@ public class Optimizer : ViewModelBase
         });
     }
     private void OptimizeCostScenario2AndSaveToCsv(
-    List<ProductionUnit> units,
-    List<TimeSeriesEntry> heatEntries,
-    List<TimeSeriesEntry> electricityEntries,
-    DateTime startDate,
-    DateTime endDate,
-    string outputCsvPath)
+     List<ProductionUnit> units,
+     List<TimeSeriesEntry> heatEntries,
+     List<TimeSeriesEntry> electricityEntries,
+     DateTime startDate,
+     DateTime endDate,
+     string outputCsvPath)
     {
-        var usedUnits = units
-    .Where(u => u.Name != "Gas Boiler 2")
-    .ToList();
-        double avgElPrice = electricityEntries
-            .Where(e => e.Timestamp >= startDate && e.Timestamp < endDate)
-            .Average(e => e.Value);
         double totalCost = 0;
         double totalCO2 = 0;
 
-        var results = new List<(DateTime Time, double GB1, double OB1, double GM1, double HP1, double HeatDemand, double HourlyCO2, double HourlyCost)>();
+        var fixedUnitOrder = new[] { "Gas Boiler 1", "Oil Boiler 1", "Gas Motor 1", "Heat Pump 1" };
+
+        var orderedUnits = fixedUnitOrder
+            .Select(name => units.FirstOrDefault(u => u.Name == name))
+            .Where(u => u != null)
+            .ToList();
+
+        var results = new List<(DateTime Time, double HeatDemand, double HourlyCO2, double HourlyCost, Dictionary<string, double> UnitProductions)>();
+
         foreach (var demand in heatEntries.Where(h => h.Timestamp >= startDate && h.Timestamp < endDate))
         {
             var el = electricityEntries.FirstOrDefault(e => e.Timestamp == demand.Timestamp);
@@ -355,28 +381,22 @@ public class Optimizer : ViewModelBase
             double hourlyCost = 0;
             double hourlyCO2 = 0;
 
-            double gb1 = 0, ob1 = 0, gm1 = 0, hp1 = 0;
+            var unitProductions = fixedUnitOrder.ToDictionary(u => u, u => 0.0);
 
-            // Construim o listă cu costul net, pe baza electricității
-            var unitsWithNetCost = usedUnits.Select(unit =>
-            {
-                double netCost = unit.ProductionCosts;
-
-                if (unit.Name.Contains("Gas Motor"))
+            var unitsWithNetCost = orderedUnits
+                .Select(unit =>
                 {
-                    netCost -= el.Value * unit.MaxElectricity;
+                    double netCost = unit.ProductionCosts;
 
-                    if (netCost < 0)
-                        netCost = 0; // sau 50, în funcție de modelul economic
-                }
+                    if (unit.Name.Contains("Gas Motor"))
+                        netCost = Math.Max(0, netCost - el.Value * unit.MaxElectricity);
+                    else if (unit.Name.Contains("Heat Pump"))
+                        netCost += el.Value * Math.Abs(unit.MaxElectricity);
 
-                else if (unit.Name.Contains("Heat Pump"))
-                    netCost += el.Value * Math.Abs(unit.MaxElectricity); // consumă curent -> crește costul
-
-                return new { Unit = unit, NetCost = netCost };
-            })
-            .OrderBy(x => x.NetCost)
-            .ToList();
+                    return new { Unit = unit, NetCost = netCost };
+                })
+                .OrderBy(x => x.NetCost)
+                .ToList();
 
             foreach (var u in unitsWithNetCost)
             {
@@ -386,13 +406,11 @@ public class Optimizer : ViewModelBase
                 var unit = u.Unit;
                 double heatFromUnit = Math.Min(unit.MaxHeat, heatNeeded);
 
-                if (unit.Name == "Gas Boiler 1") gb1 += heatFromUnit;
-                if (unit.Name == "Oil Boiler 1") ob1 += heatFromUnit;
-                if (unit.Name == "Gas Motor 1") gm1 += heatFromUnit;
-                if (unit.Name == "Heat Pump 1") hp1 += heatFromUnit;
-
                 hourlyCost += heatFromUnit * u.NetCost;
                 hourlyCO2 += heatFromUnit * unit.CO2Emissions;
+
+                if (unitProductions.ContainsKey(unit.Name))
+                    unitProductions[unit.Name] += heatFromUnit;
 
                 heatNeeded -= heatFromUnit;
             }
@@ -400,8 +418,9 @@ public class Optimizer : ViewModelBase
             totalCost += hourlyCost;
             totalCO2 += hourlyCO2;
 
-            results.Add((demand.Timestamp, gb1, ob1, gm1, hp1, demand.Value, hourlyCO2, hourlyCost));
+            results.Add((demand.Timestamp, demand.Value, hourlyCO2, hourlyCost, unitProductions));
         }
+
         var dir = Path.GetDirectoryName(outputCsvPath);
         if (!Directory.Exists(dir))
             Directory.CreateDirectory(dir);
@@ -411,24 +430,29 @@ public class Optimizer : ViewModelBase
             writer.WriteLine("Time,GB1,OB1,GM1,HP1,HeatDemand,CO2,Cost");
             foreach (var r in results)
             {
-                writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm},{r.GB1:F2},{r.OB1:F2},{r.GM1:F2},{r.HP1:F2},{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
+                writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm}," +
+                                 $"{r.UnitProductions["Gas Boiler 1"]:F2}," +
+                                 $"{r.UnitProductions["Oil Boiler 1"]:F2}," +
+                                 $"{r.UnitProductions["Gas Motor 1"]:F2}," +
+                                 $"{r.UnitProductions["Heat Pump 1"]:F2}," +
+                                 $"{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
             }
         }
+
         TotalCost = totalCost;
         TotalCO2 = totalCO2;
 
-        Console.WriteLine("✅ Scenario 2 (cost) optimization complete.");
-
+        Console.WriteLine("✅ Scenario 2 (Cost) now aligned with Custom Scenario logic.");
     }
 
-    private void OptimizeCostScenario1AndSaveToCsv(
-        List<ProductionUnit> units,
-        List<TimeSeriesEntry> demandEntries,
-        DateTime startDate,
-        DateTime endDate,
-        string outputCsvPath)
-    {
 
+    private void OptimizeCostScenario1AndSaveToCsv(
+     List<ProductionUnit> units,
+     List<TimeSeriesEntry> demandEntries,
+     DateTime startDate,
+     DateTime endDate,
+     string outputCsvPath)
+    {
         double totalCost = 0;
         double totalCO2 = 0;
 
@@ -436,10 +460,12 @@ public class Optimizer : ViewModelBase
             .Where(u => u.EnergyType == "Gas" || u.EnergyType == "Oil") // doar boilere
             .OrderBy(u => u.ProductionCosts)
             .ToList();
-        Debug.WriteLine($"Found {sortedUnits.Count} production units.");
-        var results = new List<(DateTime TimeFrom, double GB1, double GB2, double OB1, double HeatDemand, double hourlyCO2)>();
 
-        foreach (var demand in demandEntries.Where(d => d.Timestamp >= startDate && d.Timestamp <= endDate))
+        Debug.WriteLine($"Found {sortedUnits.Count} production units.");
+
+        var results = new List<(DateTime TimeFrom, double GB1, double GB2, double OB1, double HeatDemand, double HourlyCO2, double HourlyCost)>();
+
+        foreach (var demand in demandEntries.Where(d => d.Timestamp >= startDate && d.Timestamp < endDate))
         {
             double heatNeeded = demand.Value;
             double gb1 = 0, gb2 = 0, ob1 = 0;
@@ -459,18 +485,16 @@ public class Optimizer : ViewModelBase
                     gb2 += heatFromUnit;
                 else if (unit.Name.Contains("Oil Boiler 1"))
                     ob1 += heatFromUnit;
+
                 hourlyCO2 += heatFromUnit * unit.CO2Emissions;
-                heatNeeded -= heatFromUnit;
-
                 hourlyCost += heatFromUnit * unit.ProductionCosts;
-
-
+                heatNeeded -= heatFromUnit;
             }
+
             totalCost += hourlyCost;
             totalCO2 += hourlyCO2;
-            results.Add((demand.Timestamp, gb1, gb2, ob1, demand.Value, totalCO2));
 
-
+            results.Add((demand.Timestamp, gb1, gb2, ob1, demand.Value, hourlyCO2, hourlyCost));
         }
 
         var directory = Path.GetDirectoryName(outputCsvPath);
@@ -482,39 +506,41 @@ public class Optimizer : ViewModelBase
 
         using (var writer = new StreamWriter(outputCsvPath))
         {
-            writer.WriteLine("TimeFrom,GB1,GB2,OB1,HeatDemand,CO2");
+            writer.WriteLine("TimeFrom,GB1,GB2,OB1,HeatDemand,CO2,Cost");
             foreach (var result in results)
             {
-                writer.WriteLine($"{result.TimeFrom:yyyy-MM-dd HH:mm},{result.GB1:F2},{result.GB2:F2},{result.OB1:F2},{result.HeatDemand:F2},{result.hourlyCO2:F2}");
+                writer.WriteLine($"{result.TimeFrom:yyyy-MM-dd HH:mm},{result.GB1:F2},{result.GB2:F2},{result.OB1:F2},{result.HeatDemand:F2},{result.HourlyCO2:F2},{result.HourlyCost:F2}");
             }
         }
 
-        Console.WriteLine($"✅ Optimization results saved to {outputCsvPath}");
+        Console.WriteLine($"✅ Optimization results (Scenario 1 - Cost) saved to {outputCsvPath}");
 
-        TotalCost = totalCost;     // dacă ai o variabilă calculată
+        TotalCost = totalCost;
         TotalCO2 = totalCO2;
     }
 
+
     private void OptimizeEmissionsScenario2AndSaveToCsv(
-        List<ProductionUnit> units,
-        List<TimeSeriesEntry> heatEntries,
-        List<TimeSeriesEntry> electricityEntries,
-        DateTime startDate,
-        DateTime endDate,
-        string outputCsvPath)
+     List<ProductionUnit> units,
+     List<TimeSeriesEntry> heatEntries,
+     List<TimeSeriesEntry> electricityEntries,
+     DateTime startDate,
+     DateTime endDate,
+     string outputCsvPath)
     {
-        var usedUnits = units
-        .Where(u => u.Name != "Gas Boiler 2")
-        .ToList();
-
-        double avgElPrice = electricityEntries
-            .Where(e => e.Timestamp >= startDate && e.Timestamp < endDate)
-            .Average(e => e.Value);
-
         double totalCost = 0;
         double totalCO2 = 0;
 
-        var results = new List<(DateTime Time, double GB1, double OB1, double GM1, double HP1, double HeatDemand, double HourlyCO2, double HourlyCost)>();
+        var fixedUnitOrder = new[] { "Gas Boiler 1", "Oil Boiler 1", "Gas Motor 1", "Heat Pump 1" };
+
+        // Only use units for Scenario 2 (no GB2)
+        var orderedUnits = fixedUnitOrder
+            .Select(name => units.FirstOrDefault(u => u.Name == name))
+            .Where(u => u != null)
+            .ToList();
+
+        var results = new List<(DateTime Time, double HeatDemand, double HourlyCO2, double HourlyCost, Dictionary<string, double> UnitProductions)>();
+
         foreach (var demand in heatEntries.Where(h => h.Timestamp >= startDate && h.Timestamp < endDate))
         {
             var el = electricityEntries.FirstOrDefault(e => e.Timestamp == demand.Timestamp);
@@ -524,27 +550,22 @@ public class Optimizer : ViewModelBase
             double hourlyCost = 0;
             double hourlyCO2 = 0;
 
-            double gb1 = 0, ob1 = 0, gm1 = 0, hp1 = 0;
+            var unitProductions = fixedUnitOrder.ToDictionary(u => u, u => 0.0);
 
-            // Ajustăm emisiile luând în considerare impactul electricității
-            var unitsWithNetCO2 = usedUnits.Select(unit =>
-            {
-                double netCO2 = unit.CO2Emissions;
+            var unitsWithNetEmissions = orderedUnits
+                .Select(unit =>
+                {
+                    double netEmissions = unit.CO2Emissions;
 
-                // Dacă motorul produce curent (pozitiv), scade impactul de emisii
-                if (unit.Name.Contains("Gas Motor"))
-                    netCO2 -= 0; // Presupunem 0 impact suplimentar pentru curent produs
+                    if (unit.Name.Contains("Heat Pump"))
+                        netEmissions += el.Value * 0.3; // adjust for electricity
 
-                // Dacă pompa consumă curent (negativ MaxElectricity), adăugăm emisii suplimentare
-                if (unit.Name.Contains("Heat Pump"))
-                    netCO2 += el.Value * 0.3; // presupunem 0.3 kg CO2 / DKK (exemplu)
+                    return new { Unit = unit, NetEmissions = netEmissions };
+                })
+                .OrderBy(x => x.NetEmissions)
+                .ToList();
 
-                return new { Unit = unit, NetCO2 = netCO2 };
-            })
-            .OrderBy(x => x.NetCO2)
-            .ToList();
-
-            foreach (var u in unitsWithNetCO2)
+            foreach (var u in unitsWithNetEmissions)
             {
                 if (heatNeeded <= 0)
                     break;
@@ -552,13 +573,11 @@ public class Optimizer : ViewModelBase
                 var unit = u.Unit;
                 double heatFromUnit = Math.Min(unit.MaxHeat, heatNeeded);
 
-                if (unit.Name == "Gas Boiler 1") gb1 += heatFromUnit;
-                if (unit.Name == "Oil Boiler 1") ob1 += heatFromUnit;
-                if (unit.Name == "Gas Motor 1") gm1 += heatFromUnit;
-                if (unit.Name == "Heat Pump 1") hp1 += heatFromUnit;
-
+                hourlyCO2 += heatFromUnit * u.NetEmissions;
                 hourlyCost += heatFromUnit * unit.ProductionCosts;
-                hourlyCO2 += heatFromUnit * unit.CO2Emissions;
+
+                if (unitProductions.ContainsKey(unit.Name))
+                    unitProductions[unit.Name] += heatFromUnit;
 
                 heatNeeded -= heatFromUnit;
             }
@@ -566,8 +585,9 @@ public class Optimizer : ViewModelBase
             totalCost += hourlyCost;
             totalCO2 += hourlyCO2;
 
-            results.Add((demand.Timestamp, gb1, ob1, gm1, hp1, demand.Value, hourlyCO2, hourlyCost));
+            results.Add((demand.Timestamp, demand.Value, hourlyCO2, hourlyCost, unitProductions));
         }
+
         var dir = Path.GetDirectoryName(outputCsvPath);
         if (!Directory.Exists(dir))
             Directory.CreateDirectory(dir);
@@ -577,15 +597,16 @@ public class Optimizer : ViewModelBase
             writer.WriteLine("Time,GB1,OB1,GM1,HP1,HeatDemand,CO2,Cost");
             foreach (var r in results)
             {
-                writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm},{r.GB1:F2},{r.OB1:F2},{r.GM1:F2},{r.HP1:F2},{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
+                writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm},{r.UnitProductions["Gas Boiler 1"]:F2},{r.UnitProductions["Oil Boiler 1"]:F2},{r.UnitProductions["Gas Motor 1"]:F2},{r.UnitProductions["Heat Pump 1"]:F2},{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
             }
         }
+
         TotalCost = totalCost;
         TotalCO2 = totalCO2;
 
-        Console.WriteLine("✅ Scenario 2 (emissions) optimization complete.");
-
+        Console.WriteLine("✅ Scenario 2 (Emissions) now aligned with Custom Scenario logic.");
     }
+
 
     private void OptimizeEmissionsScenario1AndSaveToCsv(
     List<ProductionUnit> units,
@@ -655,20 +676,27 @@ public class Optimizer : ViewModelBase
 
     }
     private void OptimizeCostScenarioCustomAndSaveToCsv(
-        List<ProductionUnit> selectedUnits,
-        List<TimeSeriesEntry> heatEntries,
-        List<TimeSeriesEntry> electricityEntries,
-        DateTime startDate,
-        DateTime endDate,
-        string outputCsvPath)
+    List<ProductionUnit> selectedUnits,
+    List<TimeSeriesEntry> heatEntries,
+    List<TimeSeriesEntry> electricityEntries,
+    DateTime startDate,
+    DateTime endDate,
+    string outputCsvPath)
     {
         double totalCost = 0;
         double totalCO2 = 0;
 
-        // Fixăm boilerele in ordinea dorită
-        var fixedUnitOrder = new[] { "Gas Boiler 1", "Gas Boiler 2", "Oil Boiler 1", "Gas Motor 1", "Heat Pump 1" };
+        var isScenario1 = selectedUnits.All(u =>
+            u.Name == "Gas Boiler 1" ||
+            u.Name == "Gas Boiler 2" ||
+            u.Name == "Oil Boiler 1");
 
-        // Rezultate: Time, HeatDemand, CO2, Cost, productie per unitate
+        var fixedUnitOrder = new[] { "Gas Boiler 1", "Gas Boiler 2", "Oil Boiler 1", "Gas Motor 1", "Heat Pump 1" };
+        var orderedUnits = fixedUnitOrder
+            .Select(name => selectedUnits.FirstOrDefault(u => u.Name == name))
+            .Where(u => u != null)
+            .ToList();
+
         var results = new List<(DateTime Time, double HeatDemand, double HourlyCO2, double HourlyCost, Dictionary<string, double> UnitProductions)>();
 
         foreach (var demand in heatEntries.Where(h => h.Timestamp >= startDate && h.Timestamp < endDate))
@@ -680,28 +708,27 @@ public class Optimizer : ViewModelBase
             double hourlyCost = 0;
             double hourlyCO2 = 0;
 
-            // Pregătim producția pentru toate unitățile (chiar dacă nu sunt selectate)
             var unitProductions = fixedUnitOrder.ToDictionary(u => u, u => 0.0);
 
-            var unitsWithNetCost = selectedUnits.Select(unit =>
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
+            var unitsWithCost = isScenario1
+                ? orderedUnits.OrderBy(u => u.ProductionCosts).Select(u => new { Unit = u, NetCost = u.ProductionCosts }).ToList()
+                : orderedUnits.Select(unit =>
+                    {
+                        double netCost = unit.ProductionCosts;
+                        if (unit.Name.Contains("Gas Motor"))
+                            netCost = Math.Max(0, netCost - el.Value * unit.MaxElectricity);
+                        else if (unit.Name.Contains("Heat Pump"))
+                            netCost += el.Value * Math.Abs(unit.MaxElectricity);
+                        return new { Unit = unit, NetCost = netCost };
+                    })
+                    .OrderBy(x => x.NetCost)
+                    .ToList();
+#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
+
+            foreach (var u in unitsWithCost)
             {
-                double netCost = unit.ProductionCosts;
-
-                if (unit.Name.Contains("Gas Motor"))
-                    netCost = Math.Max(0, netCost - el.Value * unit.MaxElectricity);
-
-                else if (unit.Name.Contains("Heat Pump"))
-                    netCost += el.Value * Math.Abs(unit.MaxElectricity);
-
-                return new { Unit = unit, NetCost = netCost };
-            })
-            .OrderBy(x => x.NetCost)
-            .ToList();
-
-            foreach (var u in unitsWithNetCost)
-            {
-                if (heatNeeded <= 0)
-                    break;
+                if (heatNeeded <= 0) break;
 
                 var unit = u.Unit;
                 double heatFromUnit = Math.Min(unit.MaxHeat, heatNeeded);
@@ -727,39 +754,41 @@ public class Optimizer : ViewModelBase
 
         using (var writer = new StreamWriter(outputCsvPath))
         {
-            // 🔥 Header FIX: Time, GB1, GB2, OB1, GM1, HP1, HeatDemand, CO2, Cost
             writer.WriteLine("Time,GB1,GB2,OB1,GM1,HP1,HeatDemand,CO2,Cost");
-
             foreach (var r in results)
             {
-                var gb1 = r.UnitProductions["Gas Boiler 1"];
-                var gb2 = r.UnitProductions["Gas Boiler 2"];
-                var ob1 = r.UnitProductions["Oil Boiler 1"];
-                var gm1 = r.UnitProductions["Gas Motor 1"];
-                var hp1 = r.UnitProductions["Heat Pump 1"];
-
-                writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm},{gb1:F2},{gb2:F2},{ob1:F2},{gm1:F2},{hp1:F2},{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
+                writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm}," +
+                                 $"{r.UnitProductions["Gas Boiler 1"]:F2}," +
+                                 $"{r.UnitProductions["Gas Boiler 2"]:F2}," +
+                                 $"{r.UnitProductions["Oil Boiler 1"]:F2}," +
+                                 $"{r.UnitProductions["Gas Motor 1"]:F2}," +
+                                 $"{r.UnitProductions["Heat Pump 1"]:F2}," +
+                                 $"{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
             }
         }
 
         TotalCost = totalCost;
         TotalCO2 = totalCO2;
-
-        Console.WriteLine("✅ Custom Scenario (Cost with unit productions) optimization complete.");
+        Console.WriteLine("✅ Custom Scenario (Cost) matches Scenario 1 or 2 depending on selected units.");
     }
 
+
     private void OptimizeEmissionsScenarioCustomAndSaveToCsv(
-     List<ProductionUnit> selectedUnits,
-     List<TimeSeriesEntry> heatEntries,
-     List<TimeSeriesEntry> electricityEntries,
-     DateTime startDate,
-     DateTime endDate,
-     string outputCsvPath)
+    List<ProductionUnit> selectedUnits,
+    List<TimeSeriesEntry> heatEntries,
+    List<TimeSeriesEntry> electricityEntries,
+    DateTime startDate,
+    DateTime endDate,
+    string outputCsvPath)
     {
         double totalCost = 0;
         double totalCO2 = 0;
 
         var fixedUnitOrder = new[] { "Gas Boiler 1", "Gas Boiler 2", "Oil Boiler 1", "Gas Motor 1", "Heat Pump 1" };
+        var orderedUnits = fixedUnitOrder
+            .Select(name => selectedUnits.FirstOrDefault(u => u.Name == name))
+            .Where(u => u != null)
+            .ToList();
 
         var results = new List<(DateTime Time, double HeatDemand, double HourlyCO2, double HourlyCost, Dictionary<string, double> UnitProductions)>();
 
@@ -774,23 +803,18 @@ public class Optimizer : ViewModelBase
 
             var unitProductions = fixedUnitOrder.ToDictionary(u => u, u => 0.0);
 
-            var unitsWithNetEmissions = selectedUnits.Select(unit =>
-            {
-                double netEmissions = unit.CO2Emissions;
-
-                if (unit.Name.Contains("Gas Motor"))
+            var unitsWithNetEmissions = orderedUnits
+                .Select(unit =>
                 {
-                    // Dacă vrei să scazi indirect prin producție de electricitate, adaugi logica aici
-                }
-                else if (unit.Name.Contains("Heat Pump"))
-                {
-                    // Dacă vrei să adaugi emisiile indirecte din consumul de electricitate, pui aici
-                }
+                    double netEmissions = unit.CO2Emissions;
 
-                return new { Unit = unit, NetEmissions = netEmissions };
-            })
-            .OrderBy(x => x.NetEmissions)
-            .ToList();
+                    if (unit.Name.Contains("Heat Pump"))
+                        netEmissions += el.Value * 0.3;
+
+                    return new { Unit = unit, NetEmissions = netEmissions };
+                })
+                .OrderBy(x => x.NetEmissions)
+                .ToList();
 
             foreach (var u in unitsWithNetEmissions)
             {
@@ -800,8 +824,8 @@ public class Optimizer : ViewModelBase
                 var unit = u.Unit;
                 double heatFromUnit = Math.Min(unit.MaxHeat, heatNeeded);
 
-                hourlyCost += heatFromUnit * unit.ProductionCosts;
                 hourlyCO2 += heatFromUnit * u.NetEmissions;
+                hourlyCost += heatFromUnit * unit.ProductionCosts;
 
                 if (unitProductions.ContainsKey(unit.Name))
                     unitProductions[unit.Name] += heatFromUnit;
@@ -822,24 +846,17 @@ public class Optimizer : ViewModelBase
         using (var writer = new StreamWriter(outputCsvPath))
         {
             writer.WriteLine("Time,GB1,GB2,OB1,GM1,HP1,HeatDemand,CO2,Cost");
-
             foreach (var r in results)
             {
-                var gb1 = r.UnitProductions["Gas Boiler 1"];
-                var gb2 = r.UnitProductions["Gas Boiler 2"];
-                var ob1 = r.UnitProductions["Oil Boiler 1"];
-                var gm1 = r.UnitProductions["Gas Motor 1"];
-                var hp1 = r.UnitProductions["Heat Pump 1"];
-
-                writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm},{gb1:F2},{gb2:F2},{ob1:F2},{gm1:F2},{hp1:F2},{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
+                writer.WriteLine($"{r.Time:yyyy-MM-dd HH:mm},{r.UnitProductions["Gas Boiler 1"]:F2},{r.UnitProductions["Gas Boiler 2"]:F2},{r.UnitProductions["Oil Boiler 1"]:F2},{r.UnitProductions["Gas Motor 1"]:F2},{r.UnitProductions["Heat Pump 1"]:F2},{r.HeatDemand:F2},{r.HourlyCO2:F2},{r.HourlyCost:F2}");
             }
         }
 
         TotalCost = totalCost;
         TotalCO2 = totalCO2;
-
-        Console.WriteLine("✅ Custom Scenario (Emissions with unit productions) optimization complete.");
+        Console.WriteLine("✅ Custom Scenario (Emissions) now aligns with Scenario 2 logic.");
     }
+
 
 
 
