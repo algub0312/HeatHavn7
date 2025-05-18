@@ -24,7 +24,8 @@ public class HeatDemandViewModelTests
 
     [Fact]
     public void Should_Load_Summer_Data_When_Season_Is_Summer()
-    {
+    {   Console.WriteLine("heatdemand -> Should_Load_Summer_Data_When_Season_Is_Summer");
+
         var mock = CreateMockSource();
         var vm = new HeatDemandViewModel(mock);
 
@@ -36,7 +37,7 @@ public class HeatDemandViewModelTests
 
     [Fact]
     public void Should_Load_Winter_Data_When_Season_Is_Winter()
-    {
+    {   Console.WriteLine("heatdemand -> Should_Load_Winter_Data_When_Season_Is_Winter");
         var mock = CreateMockSource();
         var vm = new HeatDemandViewModel(mock);
 
@@ -48,7 +49,7 @@ public class HeatDemandViewModelTests
 
     [Fact]
     public void HeatSeries_Should_Be_Generated()
-    {
+    {   Console.WriteLine("heatdemand -> HeatSeries_Should_Be_Generated");
         var mock = CreateMockSource();
         var vm = new HeatDemandViewModel(mock);
 

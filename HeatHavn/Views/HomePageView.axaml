@@ -11,25 +11,41 @@
 
       <!-- LEFT SIDE -->
       <StackPanel Grid.Column="0" Spacing="10" >
+       
         <TextBlock Text="🏠 Home Page"
                    FontSize="28"
                    Foreground="#7B3B85"
                    FontWeight="Bold"/>
-        <TextBlock Text="HeatHavn"
+        
+          <TextBlock Text="HeatHavn"
                    FontSize="24"
                     Foreground="Black"
                    FontWeight="Bold"
                    Margin="0,50,0,0"
                        HorizontalAlignment="Center"/>
+        <Border CornerRadius="8" Background="#bfbfbf" Margin="2">
+        <StackPanel Margin="8">
         <Image Source="avares://HeatHavnAppProject/Assets/townmap.png"
                Stretch="Uniform"
                MaxWidth="550"
                MaxHeight="550"/>
       </StackPanel>
+      </Border>
+      </StackPanel>
 
       <!-- RIGHT SIDE -->
       <StackPanel Grid.Column="1" Spacing="10" Margin="20,65,5,0">
-        <TextBlock Text="Case"
+        
+          <TextBlock Text="Welcome to HeatHavn!"
+                     FontSize="28"
+                     Foreground="#7B3B85"
+                     FontWeight="Bold"/>
+          <TextBlock Text="The district heating optimization project"
+                     FontSize="18"
+                     Foreground="#7B3B85"/>
+        <Border CornerRadius="8" Background="#bfbfbf" Margin="2">
+        <StackPanel Margin="8">
+          <TextBlock Text="Case"
                    FontSize="24"
                          Foreground="Black"
                    FontWeight="Bold"/>
@@ -69,6 +85,8 @@
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
+        </StackPanel>
+        </Border>
       </StackPanel>
     </Grid>
   </ScrollViewer>

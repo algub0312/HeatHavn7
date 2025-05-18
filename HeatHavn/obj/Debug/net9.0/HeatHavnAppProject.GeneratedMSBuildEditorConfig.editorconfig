@@ -16,29 +16,29 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = HeatHavnAppProject
-build_property.ProjectDir = C:\Users\gubau\Documents\GitHub\HeatHavn7\HeatHavn\
+build_property.ProjectDir = C:\Users\Mihai\Documents\GitHub\HeatHavn7\HeatHavn\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/gubau/Documents/GitHub/HeatHavn7/HeatHavn/App.axaml]
+[C:/Users/Mihai/Documents/GitHub/HeatHavn7/HeatHavn/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/gubau/Documents/GitHub/HeatHavn7/HeatHavn/Views/ElectricityPricesView.axaml]
+[C:/Users/Mihai/Documents/GitHub/HeatHavn7/HeatHavn/Views/ElectricityPricesView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/gubau/Documents/GitHub/HeatHavn7/HeatHavn/Views/HeatDemandView.axaml]
+[C:/Users/Mihai/Documents/GitHub/HeatHavn7/HeatHavn/Views/HeatDemandView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/gubau/Documents/GitHub/HeatHavn7/HeatHavn/Views/HomePageView.axaml]
+[C:/Users/Mihai/Documents/GitHub/HeatHavn7/HeatHavn/Views/HomePageView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/gubau/Documents/GitHub/HeatHavn7/HeatHavn/Views/MainWindow.axaml]
+[C:/Users/Mihai/Documents/GitHub/HeatHavn7/HeatHavn/Views/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/gubau/Documents/GitHub/HeatHavn7/HeatHavn/Views/OptimizerView.axaml]
+[C:/Users/Mihai/Documents/GitHub/HeatHavn7/HeatHavn/Views/OptimizerView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/gubau/Documents/GitHub/HeatHavn7/HeatHavn/Views/ProductionUnitView.axaml]
+[C:/Users/Mihai/Documents/GitHub/HeatHavn7/HeatHavn/Views/ProductionUnitView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

@@ -19,6 +19,7 @@ namespace HeatHavnAppProject.Tests
                 CO2Emissions = 200,
                 EnergyType = "Gas"
             };
+            
 
             // Assert
             Assert.Equal("Test Boiler", unit.Name);

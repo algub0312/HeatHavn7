@@ -8,7 +8,8 @@ public class SourceDataManagerViewModelTests
 {
     [Fact]
     public void LoadSummerDataHeat_ShouldPopulateSummerDataCollection()
-    {
+    {Console.WriteLine("source data manager -> LoadSummerDataHeat_ShouldPopulateSummerDataCollection");
+
         // Arrange
         var mockData = new List<RawSourceDataEntry>
         {

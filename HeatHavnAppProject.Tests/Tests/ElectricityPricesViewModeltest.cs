@@ -25,7 +25,8 @@ public class ElectricityPricesViewModelTests
 
     [Fact]
     public void Should_Load_Summer_Data_When_Season_Is_Summer()
-    {
+    {Console.WriteLine("electricity prices -> Should_Load_Summer_Data_When_Season_Is_Summer");
+
         var mockSource = CreateMockSource();
         var viewModel = new ElectricityPricesViewModel(mockSource);
 
@@ -37,7 +38,8 @@ public class ElectricityPricesViewModelTests
 
     [Fact]
     public void Should_Load_Winter_Data_When_Season_Is_Winter()
-    {
+    {Console.WriteLine("electricity prices -> Should_Load_Winter_Data_When_Season_Is_Winter");
+
         var mockSource = CreateMockSource();
         var viewModel = new ElectricityPricesViewModel(mockSource);
 
@@ -49,7 +51,8 @@ public class ElectricityPricesViewModelTests
 
     [Fact]
     public void ElSeries_Should_Not_Be_Null()
-    {
+    {Console.WriteLine("electricity prices -> ElSeries_Should_Not_Be_Null");
+
         var mockSource = CreateMockSource();
         var viewModel = new ElectricityPricesViewModel(mockSource);
 

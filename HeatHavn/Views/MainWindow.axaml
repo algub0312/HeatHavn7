@@ -37,6 +37,7 @@
             </Button>    
          <!-- Sidebar with Tab Titles, DE AICI SCHIMBATI FUNDALUL DE LA TAB BAR-->
     <ListBox 
+    CornerRadius="4"
     Background="#969696"
              ItemsSource="{Binding Tabs}" 
              SelectedItem="{Binding CurrentView}">
